@@ -10,15 +10,22 @@ public class StartupWindow extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private JSlider voltageSlider;
 	private JSlider frequencySlider;
+	
 	private JLabel voltageLabel;
 	private JLabel frequencyLabel;
 	private JLabel impedanceLabel;
 	private JLabel amplitudeLabel;
 	private JLabel angleLabel;
+	private JLabel currNodeLabel;
+	
 	private JButton addSingleComponent;
 	private JButton deleteSingleComponent;
 	private JButton addParallelComponents;
 	private JButton deleteParallelComponents;
+	private JButton viewAllButton;
+	private JButton editBranchButton;
+	private JButton calculateButton;
+	
 	static final int MIN_FREQ = 0;
 	static final int MAX_FREQ = 100000;
 	static final int DEFAULT_FREQ = 1000;
@@ -64,9 +71,14 @@ public class StartupWindow extends JFrame{
 		deleteSingleComponent = new JButton("Delete single component");
 		addParallelComponents = new JButton("Add a parallel section");
 		deleteParallelComponents = new JButton("Delete a parallel section");
+		viewAllButton = new JButton("View all components");
+		editBranchButton = new JButton("Edit current parallel section");
+		calculateButton = new JButton("Calculate impedance");
 		
 		frequencyLabel = new JLabel("Frequency: 1000Hz",JLabel.CENTER);
 		voltageLabel = new JLabel("Peak to peak voltage: 5V",JLabel.CENTER);
+		currNodeLabel = new JLabel("Current node:");
+		
 		
 		impedanceLabel = new JLabel("Impedance:",JLabel.CENTER);
 		amplitudeLabel = new JLabel("Current Amplitude:",JLabel.CENTER);
