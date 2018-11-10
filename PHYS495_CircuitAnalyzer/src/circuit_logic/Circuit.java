@@ -41,6 +41,10 @@ public class Circuit {
 		this.current = node;
 	}
 	
+	public CircuitNode findNode(String name) {
+		return CircuitMap.get(name);
+	}
+	
 	public void sameComponentChangeValue(String name,CircuitComponent c) {
 		CircuitMap.get(name).changeComponent(c);
 	}
@@ -53,6 +57,7 @@ public class Circuit {
 		setCurrentNode(CircuitMap.get(newName));
 	}
 	
+	//must use set current node method before calling this method
 	public void addSingleNewNode(String name,CircuitComponent c) {
 		CircuitNode newNode = new CircuitNode(c);
 		newNode.setName(name);
@@ -111,6 +116,7 @@ public class Circuit {
 		}
 	}
 	
+	//must use set current node before calling this method
 	public void addParallelNodes(int numOfBranches) {
 		String endName = "end" + JunctionNum;
 		CircuitNode end = new CircuitNode(new JunctionEnd(JunctionNum));
@@ -131,8 +137,48 @@ public class Circuit {
 		JunctionNum ++;
 	}
 	
-	public void removeSingleBranch(int JunctionEndNum,int toRemove) {
+	public void addFirstNodeToBranch(String JunctionEndNum,int branch,String name,CircuitComponent c) {
 		CircuitNode end = CircuitMap.get("end" + JunctionEndNum);
+		setCurrentNode(end.prev().getChildren().get(branch));
+		addSingleNewNode(name,c);
+	}
+	
+	public void removeParallelSection(String JunctionEndNum) {
+		CircuitNode end = CircuitMap.get("end" + JunctionEndNum);
+		CircuitNode prev = end.prev();
+		CircuitNode next = end.next();
+		prev.setNext(next);
+		next.setPrev(prev);
+		Vector<CircuitNode> children = prev.getChildren();
+		for(int i = 0;i < children.size();++i) {
+			CircuitNode start = children.get(i);
+			start = start.next();
+			while(start != end) {
+				if(start.getComponent().getType() == "JunctionEnd") {
+					removeParallelSection(Double.toString(start.getComponent().getValue()));
+					start = start.next();
+				}
+				else {
+					CircuitMap.remove(start.getName());
+				}
+			}
+		}
+		CircuitMap.remove("end" + JunctionEndNum);
+	}
+	
+	public void removeSingleBranch(String JunctionEndNum,int toRemove) {
+		CircuitNode end = CircuitMap.get("end" + JunctionEndNum);
+		CircuitNode start = end.prev().getChildren().get(toRemove);
+		start = start.next();
+		while(start != end) {
+			if(start.getComponent().getType() == "JunctionEnd") {
+				removeParallelSection(Double.toString(start.getComponent().getValue()));
+				start = start.next();
+			}
+			else {
+				CircuitMap.remove(start.getName());
+			}
+		}
 		end.prev().removeBranch(toRemove);
 	}
 	
@@ -140,10 +186,12 @@ public class Circuit {
 	public ComplexNumber calculateParallelImpedance(CircuitNode node,double frequency){
 		CircuitNode prev = node.prev();
 		JunctionEnd je = (JunctionEnd) node.getComponent();
+		boolean isEmpty = true;
 		for(int i = 0;i < prev.getChildren().size();++i) {
 			CircuitNode start = prev.getChildren().get(i);
 			if(start.next() == node) {}
 			else {
+				isEmpty = false;
 				ComplexNumber branchImpedance = new ComplexNumber(0,0);
 				while(start != node) {
 					if(start.getComponent().getType()=="JunctionEnd") {
@@ -158,7 +206,8 @@ public class Circuit {
 				je.updateImpedance(branchImpedance);
 			}
 		}
-		return je.calculateImpedance(frequency);
+		if(isEmpty) return new ComplexNumber(0,0);
+		else return je.calculateImpedance(frequency);
 		
 	}
 	
@@ -204,6 +253,52 @@ public class Circuit {
 		
 		
 		
+	}
+	
+	public Vector<String> viewCircuit(){
+		Vector<String> result = new Vector<String>();
+		for(CircuitNode node = start0;node != end0; node = node.next()){
+			if(node == start0) {
+				result.add("Circuit Start");
+			}
+			
+			else if(node.getComponent().getType() == "JunctionEnd") {
+				result.add("Parallel Section " + node.getComponent().getValue());
+			}
+			
+			else if(node == outputStartingNode) {
+				result.add("(Output terminal)");
+				result.add(node.getName());
+			}
+			else {
+				result.add(node.getName());
+			}
+		}
+		result.add("Circuit End");
+		
+		return result;
+	}
+	
+	//assuming name is a branch end
+	public Vector<String> viewBranch(String JunctionEndNum,int branch){
+		Vector<String> result = new Vector<String>();
+		CircuitNode end = CircuitMap.get("end" + JunctionEndNum);
+		CircuitNode start = end.prev().getChildren().get(branch);
+		result.add("Branch start");
+		start = start.next();
+		while(start != end) {
+			if(start.getComponent().getType() == "JunctionEnd") {
+				result.add("Parallel Section " + start.getComponent().getValue());
+				start = start.next();
+			}
+			
+			else {
+				result.add(start.getName());
+				start = start.next();
+			}
+		}
+		result.add("Branch End");
+		return result;
 	}
 	
 	
