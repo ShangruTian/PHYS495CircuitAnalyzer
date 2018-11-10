@@ -35,7 +35,7 @@ public class ComplexNumber {
 	}
 	
 	public void divide(ComplexNumber c) {
-		float commonDenominator = c.getRealPart() * c.getImaginaryPart();
+		float commonDenominator = c.getRealPart() * c.getRealPart() + c.getImaginaryPart() * c.getImaginaryPart();
 		float newRealPart = this.real_part * c.getRealPart() + this.imaginary_part * c.getImaginaryPart();
 		float newImaginaryPart = this.imaginary_part * c.getRealPart() - this.real_part * c.getImaginaryPart();
 		this.real_part = newRealPart/commonDenominator;

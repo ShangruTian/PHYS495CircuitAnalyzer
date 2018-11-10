@@ -61,5 +61,9 @@ public class CircuitNode {
 	public void changeComponent (CircuitComponent newComponent) {
 		this.component = newComponent;
 	}
+	
+	public CircuitComponent getComponent() {
+		return this.component;
+	}
 
 }
