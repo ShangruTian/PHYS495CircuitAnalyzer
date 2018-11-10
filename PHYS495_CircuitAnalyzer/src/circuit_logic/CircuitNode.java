@@ -7,11 +7,20 @@ public class CircuitNode {
 	private Vector<CircuitNode> children;
 	private CircuitNode next;
 	private CircuitNode prev;
+	private String name;
 	
 	public CircuitNode(CircuitComponent c) {
 		this.component = c;
 		children = new Vector<CircuitNode>();
 		next = null;
+	}
+	
+	public void setName(String s) {
+		this.name = s;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	public ComplexNumber calculateImpedance(double frequency) {

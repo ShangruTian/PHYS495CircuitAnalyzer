@@ -18,6 +18,8 @@ public class Circuit {
 		start0.setNext(end0);
 		end0.setPrev(start0);
 		current = start0;
+		start0.setName("Circuit Start");
+		end0.setName("Circuit End");
 		CircuitMap.put("start0", start0);
 		CircuitMap.put("end0", end0);
 		JunctionNum ++;
@@ -53,6 +55,7 @@ public class Circuit {
 	
 	public void addSingleNewNode(String name,CircuitComponent c) {
 		CircuitNode newNode = new CircuitNode(c);
+		newNode.setName(name);
 		newNode.setPrev(current);
 		//newNode.setNext(current.next());
 		if(current.isBranchStart()) {
@@ -111,6 +114,7 @@ public class Circuit {
 	public void addParallelNodes(int numOfBranches) {
 		String endName = "end" + JunctionNum;
 		CircuitNode end = new CircuitNode(new JunctionEnd(JunctionNum));
+		end.setName(endName);
 		end.setPrev(current);
 		end.setNext(current.next());
 		current.next().setPrev(end);
