@@ -15,7 +15,7 @@ public abstract class CircuitComponent {
 		this.type = type;
 	}
 	
-	public double getValue() {
+	public float getValue() {
 		return value;
 	}
 	

@@ -25,7 +25,7 @@ public class StartupWindow extends JFrame{
 	private JButton deleteSingleComponent;
 	private JButton addParallelComponents;
 	private JButton deleteParallelComponents;
-	private JButton viewAllButton;
+	private JButton changeComponentButton;
 	private JButton viewCircuitButton;
 	private JButton editBranchButton;
 	private JButton calculateButton;
@@ -85,7 +85,7 @@ public class StartupWindow extends JFrame{
 		deleteSingleComponent = new JButton("Delete single component");
 		addParallelComponents = new JButton("Add a parallel section");
 		deleteParallelComponents = new JButton("Delete a parallel section");
-		viewAllButton = new JButton("View all components");
+		changeComponentButton = new JButton("Change a component");
 		viewCircuitButton = new JButton("View entire circuit");
 		editBranchButton = new JButton("View/Edit parallel section");
 		calculateButton = new JButton("Calculate impedance");
@@ -135,7 +135,7 @@ public class StartupWindow extends JFrame{
 		sliderPanel.add(frequencySlider);
 		mainPanel.add(sliderPanel);
 		
-		displayPanel.add(viewAllButton);
+		displayPanel.add(changeComponentButton);
 		displayPanel.add(calculateButton);
 		displayPanel.add(impedanceLabel);
 		displayPanel.add(angleLabel);

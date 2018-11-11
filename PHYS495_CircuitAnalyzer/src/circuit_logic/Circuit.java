@@ -182,6 +182,15 @@ public class Circuit {
 		end.prev().removeBranch(toRemove);
 	}
 	
+	public void addSingleBranch(String JunctionEndNum) {
+		CircuitNode end = CircuitMap.get("end" + JunctionEndNum);
+		float value = end.prev().getChildren().get(0).getComponent().getValue();
+		CircuitNode newNode = new CircuitNode(new JunctionStart(value));
+		newNode.setNext(end);
+		newNode.setPrev(end.prev());
+		end.prev().getChildren().addElement(newNode);
+	}
+	
 	//only called when curr is a junction end
 	public ComplexNumber calculateParallelImpedance(CircuitNode node,double frequency){
 		CircuitNode prev = node.prev();

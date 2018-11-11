@@ -21,9 +21,9 @@ public class AddSingleComponentWindow extends JFrame{
 	private JLabel enterNameLabel;
 	private JLabel selectLocationLabel;
 	
-	private JComboBox componentCombobox;
-	private JComboBox unitCombobox;
-	private JComboBox locationCombobox;
+	private JComboBox<String> componentCombobox;
+	private JComboBox<String> unitCombobox;
+	private JComboBox<String> locationCombobox;
 	
 	private String[] resistorUnits;
 	private String[] capacitorUnits;
@@ -62,17 +62,17 @@ public class AddSingleComponentWindow extends JFrame{
 		nameTextfield = new JTextField();
 		
 		components = new String[]{"Resistor","Capacitor","Inductor"};
-		componentCombobox = new JComboBox(components);
+		componentCombobox = new JComboBox<String>(components);
 		componentCombobox.setSelectedItem("Resistor");
 		
 		resistorUnits = new String[] {"Ohms","Kilo Ohms","Mega Ohms"};
 		capacitorUnits = new String[] {"Farad","Mico Farad","Nano Farad"};
 		inductorUnits = new String[] {"Henry","Micro Henry","Nano Henry"};
 		
-		unitCombobox = new JComboBox(resistorUnits);
+		unitCombobox = new JComboBox<String>(resistorUnits);
 		unitCombobox.setSelectedItem("Ohms");
 		
-		locationCombobox = new JComboBox();
+		locationCombobox = new JComboBox<String>();
 		
 		addButton = new JButton("Add");
 		
