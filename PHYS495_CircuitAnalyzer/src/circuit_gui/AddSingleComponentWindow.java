@@ -19,6 +19,7 @@ public class AddSingleComponentWindow extends JFrame{
 	
 	private JLabel enterValueLabel;
 	private JLabel enterNameLabel;
+	private JLabel selectComponentLabel;
 	private JLabel selectLocationLabel;
 	
 	private JComboBox<String> componentCombobox;
@@ -35,7 +36,7 @@ public class AddSingleComponentWindow extends JFrame{
 	
 	public AddSingleComponentWindow(Circuit c) {
 		this.circuit = c;
-		setSize(500,100);
+		setSize(650,100);
 		setLocation(200,200);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
@@ -52,11 +53,12 @@ public class AddSingleComponentWindow extends JFrame{
 		locationPanel.setLayout(new GridLayout(1,2));
 		
 		newComponentPanel = new JPanel();
-		newComponentPanel.setLayout(new GridLayout(1,5));
+		newComponentPanel.setLayout(new GridLayout(1,8));
 		
 		enterValueLabel = new JLabel("Enter value:");
 		enterNameLabel = new JLabel("Enter name:");
 		selectLocationLabel = new JLabel("Select the location to insert after:");
+		selectComponentLabel = new JLabel("Component");
 		
 		valueTextfield = new JTextField();
 		nameTextfield = new JTextField();
@@ -108,9 +110,12 @@ public class AddSingleComponentWindow extends JFrame{
 		
 		mainPanel.add(locationPanel);
 		
+		newComponentPanel.add(selectComponentLabel);
 		newComponentPanel.add(componentCombobox);
+		newComponentPanel.add(enterValueLabel);
 		newComponentPanel.add(valueTextfield);
 		newComponentPanel.add(unitCombobox);
+		newComponentPanel.add(enterNameLabel);
 		newComponentPanel.add(nameTextfield);
 		newComponentPanel.add(addButton);
 		
