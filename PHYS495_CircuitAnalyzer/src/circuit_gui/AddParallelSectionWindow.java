@@ -32,10 +32,10 @@ public class AddParallelSectionWindow extends JFrame{
 	private JLabel enterValueLabel;
 	private JLabel statusLabel;
 	
-	private JComboBox locationCombobox;
-	private JComboBox branchCombobox;
-	private JComboBox componentCombobox;
-	private JComboBox unitCombobox;
+	private JComboBox<String> locationCombobox;
+	private JComboBox<Integer> branchCombobox;
+	private JComboBox<String> componentCombobox;
+	private JComboBox<String> unitCombobox;
 	
 	private JTextField branchTextfield;
 	private JTextField nameTextfield;
@@ -52,7 +52,7 @@ public class AddParallelSectionWindow extends JFrame{
 	
 	public AddParallelSectionWindow(Circuit c) {
 		this.circuit = c;
-		setSize(720,650);
+		setSize(720,250);
 		setLocation(200,200);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
@@ -84,8 +84,8 @@ public class AddParallelSectionWindow extends JFrame{
 		numOfBranchLabel = new JLabel("# of branches");
 		selectBranchLabel = new JLabel("Select a branch");
 		selectComponentLabel = new JLabel("Component");
-		enterNameLabel = new JLabel("Enter a name");
-		enterValueLabel = new JLabel("Enter a value");
+		enterNameLabel = new JLabel("Enter name:");
+		enterValueLabel = new JLabel("Enter value:");
 		statusLabel = new JLabel("Status: branches not created");
 		
 		

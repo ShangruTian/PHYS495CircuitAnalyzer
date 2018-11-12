@@ -6,7 +6,7 @@ public class JunctionEnd extends CircuitComponent{
 	public JunctionEnd(float value) {
 		super("JunctionEnd",value);
 		numerator = new ComplexNumber((float)1,(float)0);
-		denominator = new ComplexNumber((float)1,(float)0);
+		denominator = new ComplexNumber((float)0,(float)0);
 		
 	}
 	
@@ -16,6 +16,9 @@ public class JunctionEnd extends CircuitComponent{
 	}
 
 	public ComplexNumber calculateImpedance(double frequency) {
+		if(denominator.getRealPart() == 0 && denominator.getImaginaryPart() ==0) {
+			return new ComplexNumber (0,0);
+		}
 		numerator.divide(denominator);
 		return numerator;
 	}

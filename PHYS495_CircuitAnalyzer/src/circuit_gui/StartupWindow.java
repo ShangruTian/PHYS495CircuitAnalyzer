@@ -49,7 +49,7 @@ public class StartupWindow extends JFrame{
 	public static void main(String[] args) {
 		String test = "Parallel Section 0";
 		System.out.println("end" + test.charAt(test.length()-1));
-		AddParallelSectionWindow sw = new AddParallelSectionWindow(null);
+		ChangeComponentWindow sw = new ChangeComponentWindow(null);
 	}
 	
 	public StartupWindow() {

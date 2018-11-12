@@ -15,7 +15,7 @@ public class DeleteSingleComponentWindow extends JFrame{
 	
 	private JLabel deleteLabel;
 	
-	private JComboBox componentCombobox;
+	private JComboBox<String> componentCombobox;
 	
 	private JButton deleteButton;
 	public DeleteSingleComponentWindow(Circuit c) {
@@ -34,7 +34,7 @@ public class DeleteSingleComponentWindow extends JFrame{
 		
 		deleteLabel = new JLabel("Delete a component");
 		
-		componentCombobox = new JComboBox();
+		componentCombobox = new JComboBox<String>();
 		
 		deleteButton = new JButton("Delete");
 	}
