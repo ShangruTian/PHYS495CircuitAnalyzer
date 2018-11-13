@@ -36,7 +36,7 @@ public class ViewCircuitWindow extends JFrame{
 		this.circuit = c;
 		setSize(480,200);
 		setLocation(200,200);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		initializeComponents();
 		createGUI();

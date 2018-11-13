@@ -23,9 +23,9 @@ public class DeleteParallelSectionWindow extends JFrame{
 		private JButton deleteButton;
 		public DeleteParallelSectionWindow(Circuit c) {
 			this.circuit = c;
-			setSize(300,60);
+			setSize(420,60);
 			setLocation(200,200);
-			setDefaultCloseOperation(EXIT_ON_CLOSE);
+			setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			this.setResizable(false);
 			initializeComponents();
 			createGUI();

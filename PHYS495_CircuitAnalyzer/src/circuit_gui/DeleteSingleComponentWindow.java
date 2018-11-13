@@ -20,9 +20,9 @@ public class DeleteSingleComponentWindow extends JFrame{
 	private JButton deleteButton;
 	public DeleteSingleComponentWindow(Circuit c) {
 		this.circuit = c;
-		setSize(300,60);
+		setSize(380,60);
 		setLocation(200,200);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		initializeComponents();
 		createGUI();

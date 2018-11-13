@@ -37,7 +37,7 @@ private static final long serialVersionUID = 1;
 		this.circuit = c;
 		setSize(650,100);
 		setLocation(200,200);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		initializeComponents();
 		createGUI();

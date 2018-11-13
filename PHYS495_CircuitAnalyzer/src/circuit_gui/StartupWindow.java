@@ -1,5 +1,8 @@
 package circuit_gui;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -37,6 +40,8 @@ public class StartupWindow extends JFrame{
 	
 	private Circuit circuit;
 	
+	private boolean canCalculate;
+	
 	static final int MIN_FREQ = 0;
 	static final int MAX_FREQ = 100000;
 	static final int DEFAULT_FREQ = 10000;
@@ -49,7 +54,7 @@ public class StartupWindow extends JFrame{
 	public static void main(String[] args) {
 		String test = "Parallel Section 0";
 		System.out.println("end" + test.charAt(test.length()-1));
-		ChangeComponentWindow sw = new ChangeComponentWindow(null);
+		StartupWindow sw = new StartupWindow();
 	}
 	
 	public StartupWindow() {
@@ -60,7 +65,8 @@ public class StartupWindow extends JFrame{
 		this.setResizable(false);
 		initComponents();
 		createGUI();
-		
+		addActionListeners();
+		canCalculate = false;
 		this.setVisible(true);
 	}
 	
@@ -143,5 +149,76 @@ public class StartupWindow extends JFrame{
 		
 		add(mainPanel);
 		
+	}
+	
+	public void addActionListeners() {
+		addSingleComponent.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canCalculate = false;
+				new AddSingleComponentWindow(null);
+			}
+
+		});
+		
+		deleteSingleComponent.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canCalculate = false;
+				new DeleteSingleComponentWindow(null);
+			}
+
+		});
+		
+		addParallelComponents.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canCalculate = false;
+				new AddParallelSectionWindow(null);
+			}
+
+		});
+		deleteParallelComponents.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canCalculate = false;
+				new DeleteParallelSectionWindow(null);
+			}
+
+		});
+		
+		viewCircuitButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canCalculate = false;
+				new ViewCircuitWindow(null);
+			}
+
+		});
+		
+		editBranchButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canCalculate = false;
+				new EditBranchWindow(null);
+			}
+
+		});
+		
+		changeComponentButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				canCalculate = false;
+				new ChangeComponentWindow(null);
+			}
+
+		});
 	}
 }
