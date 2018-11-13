@@ -163,6 +163,7 @@ public class Circuit {
 				}
 			}
 		}
+		prev.removeChildren();
 		CircuitMap.remove("end" + JunctionEndNum);
 	}
 	

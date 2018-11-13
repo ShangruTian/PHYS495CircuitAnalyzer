@@ -11,8 +11,9 @@ public class CircuitNode {
 	
 	public CircuitNode(CircuitComponent c) {
 		this.component = c;
-		children = new Vector<CircuitNode>();
+		children = null;
 		next = null;
+		prev = null;
 	}
 	
 	public void setName(String s) {
@@ -36,7 +37,7 @@ public class CircuitNode {
 	}
 	
 	public void removeChildren() {
-		children = null;
+		this.children = null;
 	}
 	
 	public Vector<CircuitNode> getChildren(){
