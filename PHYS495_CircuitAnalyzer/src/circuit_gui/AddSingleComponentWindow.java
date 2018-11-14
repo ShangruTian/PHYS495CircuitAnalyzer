@@ -155,7 +155,7 @@ public class AddSingleComponentWindow extends JFrame{
 		        cleanUp();
 		        
 		    }
-		});;
+		});
 		
 		componentCombobox.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {

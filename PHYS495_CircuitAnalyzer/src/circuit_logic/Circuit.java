@@ -74,6 +74,9 @@ public class Circuit {
 		CircuitNode oldNode = CircuitMap.get(oldName);
 		setCurrentNode(oldNode);
 		addSingleNewNode(newName,c);
+		if(outputStartingNode == oldNode) {
+			setOutput(findNode(newName));
+		}
 		deleteSingleNode(oldName);
 		setCurrentNode(CircuitMap.get(newName));
 	}

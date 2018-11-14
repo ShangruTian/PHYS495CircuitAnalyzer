@@ -4,8 +4,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
+import circuit_logic.Capacitor;
 import circuit_logic.Circuit;
+import circuit_logic.CircuitComponent;
+import circuit_logic.CircuitNode;
+import circuit_logic.Inductor;
+import circuit_logic.Resistor;
 public class ChangeComponentWindow extends JFrame{
 private static final long serialVersionUID = 1;
 	
@@ -60,7 +67,9 @@ private static final long serialVersionUID = 1;
 		selectComponentLabel = new JLabel("Component");
 		
 		valueTextfield = new JTextField();
+		valueTextfield.getDocument().addDocumentListener(new canCreate());
 		nameTextfield = new JTextField();
+		nameTextfield.getDocument().addDocumentListener(new canCreate());
 		
 		components = new String[]{"Resistor","Capacitor","Inductor"};
 		componentCombobox = new JComboBox<String>(components);
@@ -72,10 +81,35 @@ private static final long serialVersionUID = 1;
 		
 		unitCombobox = new JComboBox<String>(resistorUnits);
 		unitCombobox.setSelectedItem("Ohms");
+		int sizeOfHashmap = circuit.getMap().size();
+		String[] locations = new String[sizeOfHashmap-2];
+		int i = 0;
+		for(String s: circuit.getMap().keySet()) {
+			if(s.equals("start0") || s.equals("end0")) {}
+			else {
+				locations[i] = s;
+				++i;
+			}
+		}
+		locationCombobox = new JComboBox<String>(locations);
 		
-		locationCombobox = new JComboBox<String>();
 		
 		changeButton = new JButton("Change");
+		changeButton.setEnabled(false);
+		changeButton.addActionListener(new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	String location = (String) locationCombobox.getSelectedItem();
+		    	CircuitNode toChange = circuit.findNode(location);
+		    	if(generateComponent().getType().equals(toChange.getComponent().getType())) {
+		    		circuit.sameComponentChangeValue(location, generateComponent());
+		    	}
+		    	else {
+		    		circuit.changeNodeToDifferentComponent(location, nameTextfield.getText(), generateComponent());
+		    	}
+		        cleanUp();
+		        
+		    }
+		});
 		
 		componentCombobox.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
@@ -120,6 +154,99 @@ private static final long serialVersionUID = 1;
 		
 		mainPanel.add(newComponentPanel);
 		add(mainPanel);
+	}
+	
+	private CircuitComponent generateComponent() {
+		if(componentCombobox.getSelectedIndex() == 0) {
+			//a resistor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Resistor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if (unitCombobox.getSelectedIndex() == 1) {
+				return new Resistor(1000 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else {
+				return new Resistor(1000000 * Integer.parseInt(valueTextfield.getText()));
+			}
+		}
+		
+		else if(componentCombobox.getSelectedIndex() == 1) {
+			//a capacitor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Capacitor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if(unitCombobox.getSelectedIndex() == 1) {
+				return new Capacitor(0.001 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else {
+				return new Capacitor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+			}
+		}
+		
+		else {
+			//an inductor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Inductor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if(unitCombobox.getSelectedIndex() == 1) {
+				return new Inductor(0.001 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else return new Inductor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+		}
+	}
+	
+	private boolean isNumber() {
+		try {
+			Integer.parseInt(valueTextfield.getText());
+		}
+		
+		catch(NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean isValidInput() {
+		String name = nameTextfield.getText();
+		String targetName = (String)locationCombobox.getSelectedItem();
+		CircuitNode target = circuit.findNode(targetName);
+		if(target.getComponent().getType().equals((String)componentCombobox.getSelectedItem())) {
+			System.out.println((String)componentCombobox.getSelectedItem());
+			return isNumber();
+		}
+		else return(!name.equals("") && !circuit.nameExist(name) && isNumber());
+	}
+	
+	private void cleanUp() {
+		this.dispose();
+	}
+	
+	private class canCreate implements DocumentListener{
+
+		@Override
+		public void changedUpdate(DocumentEvent arg0) {
+			changeButton.setEnabled(isValidInput());
+			
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			changeButton.setEnabled(isValidInput());
+			
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			changeButton.setEnabled(isValidInput());
+			
+		}
+		
 	}
 
 }

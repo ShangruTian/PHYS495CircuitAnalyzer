@@ -231,7 +231,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
-				new ChangeComponentWindow(null);
+				new ChangeComponentWindow(circuit);
 			}
 
 		});
