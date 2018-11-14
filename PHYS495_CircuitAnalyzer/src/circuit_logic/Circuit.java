@@ -94,7 +94,7 @@ public class Circuit {
 			current.setNext(newNode);
 			CircuitMap.put(name, newNode);
 		}
-		else if(current.next().getComponent().getType() == "JunctionEnd") {
+		else if(current.next().getComponent().getType().equals("JunctionEnd")) {
 			newNode.setNext(current.next());
 			current.setNext(newNode);
 			CircuitMap.put(name, newNode);
@@ -127,7 +127,7 @@ public class Circuit {
 			CircuitMap.remove(name);
 		}
 		
-		else if(toDelete.next().getComponent().getType() == "JunctionEnd") {
+		else if(toDelete.next().getComponent().getType().equals("JunctionEnd")) {
 			toDeletePrev.setNext(toDelete.next());
 			CircuitMap.remove(name);
 		}
@@ -180,7 +180,7 @@ public class Circuit {
 			CircuitNode start = children.get(i);
 			start = start.next();
 			while(start != end) {
-				if(start.getComponent().getType() == "JunctionEnd") {
+				if(start.getComponent().getType().equals("JunctionEnd")) {
 					removeParallelSection(Double.toString(start.getComponent().getValue()));
 					start = start.next();
 				}
@@ -198,7 +198,7 @@ public class Circuit {
 		CircuitNode start = end.prev().getChildren().get(toRemove);
 		start = start.next();
 		while(start != end) {
-			if(start.getComponent().getType() == "JunctionEnd") {
+			if(start.getComponent().getType().equals("JunctionEnd")) {
 				removeParallelSection(Double.toString(start.getComponent().getValue()));
 				start = start.next();
 			}
@@ -230,7 +230,7 @@ public class Circuit {
 				isEmpty = false;
 				ComplexNumber branchImpedance = new ComplexNumber(0,0);
 				while(start != node) {
-					if(start.getComponent().getType()=="JunctionEnd") {
+					if(start.getComponent().getType().equals("JunctionEnd")) {
 						branchImpedance.add(calculateParallelImpedance(start,frequency));
 						start = start.next();
 					}
@@ -251,7 +251,7 @@ public class Circuit {
 		ComplexNumber ans = new ComplexNumber(0,0);
 		CircuitNode curr = outputStartingNode;
 		while(curr != end0) {
-			if(curr.getComponent().getType() == "JunctionEnd") {
+			if(curr.getComponent().getType().equals("JunctionEnd")) {
 				ans.add(calculateParallelImpedance(curr,frequency));
 				curr = curr.next();
 			}
@@ -269,7 +269,7 @@ public class Circuit {
 		CircuitNode curr = start0.next();
 		ComplexNumber inputImpedance = new ComplexNumber(0,0);
 		while(curr != outputStartingNode) {
-			if(curr.getComponent().getType() == "JunctionEnd") {
+			if(curr.getComponent().getType().equals("JunctionEnd")) {
 				inputImpedance.add(calculateParallelImpedance(curr,frequency));
 				curr = curr.next();
 			}
@@ -296,7 +296,7 @@ public class Circuit {
 		CircuitNode curr = start0.next();
 		ComplexNumber inputImpedance = new ComplexNumber(0,0);
 		while(curr != outputStartingNode) {
-			if(curr.getComponent().getType() == "JunctionEnd") {
+			if(curr.getComponent().getType().equals("JunctionEnd")) {
 				inputImpedance.add(calculateParallelImpedance(curr,frequency));
 				curr = curr.next();
 			}
@@ -323,7 +323,7 @@ public class Circuit {
 				result.add("Circuit Start");
 			}
 			
-			else if(node.getComponent().getType() == "JunctionEnd") {
+			else if(node.getComponent().getType().equals("JunctionEnd")) {
 				result.add("Parallel Section " + node.getComponent().getValue());
 			}
 			
@@ -348,7 +348,7 @@ public class Circuit {
 		result.add("Branch start");
 		start = start.next();
 		while(start != end) {
-			if(start.getComponent().getType() == "JunctionEnd") {
+			if(start.getComponent().getType().equals("JunctionEnd")) {
 				result.add("Parallel Section " + start.getComponent().getValue());
 				start = start.next();
 			}
