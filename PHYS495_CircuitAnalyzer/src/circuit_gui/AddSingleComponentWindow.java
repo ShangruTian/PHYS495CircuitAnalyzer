@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import circuit_logic.*;
 
@@ -30,6 +32,7 @@ public class AddSingleComponentWindow extends JFrame{
 	private String[] capacitorUnits;
 	private String[] inductorUnits;
 	private String[] components;
+	private String[] locations;
 	
 	private JButton addButton;
 	private Circuit circuit;
@@ -106,7 +109,9 @@ public class AddSingleComponentWindow extends JFrame{
 		selectComponentLabel = new JLabel("Component");
 		
 		valueTextfield = new JTextField();
+		valueTextfield.getDocument().addDocumentListener(new canCreate());
 		nameTextfield = new JTextField();
+		nameTextfield.getDocument().addDocumentListener(new canCreate());
 		
 		components = new String[]{"Resistor","Capacitor","Inductor"};
 		componentCombobox = new JComboBox<String>(components);
@@ -116,12 +121,34 @@ public class AddSingleComponentWindow extends JFrame{
 		capacitorUnits = new String[] {"Farad","Mico Farad","Nano Farad"};
 		inductorUnits = new String[] {"Henry","Micro Henry","Nano Henry"};
 		
+		int sizeOfHashmap = circuit.getMap().size();
+		locations = new String[sizeOfHashmap-1];
+		int i = 0;
+		for(String s: circuit.getMap().keySet()) {
+			if(s.equals("end0")) {}
+			else {
+				locations[i] = s;
+				++i;
+			}
+			
+		}
+		
 		unitCombobox = new JComboBox<String>(resistorUnits);
 		unitCombobox.setSelectedItem("Ohms");
 		
-		locationCombobox = new JComboBox<String>();
+		locationCombobox = new JComboBox<String>(locations);
 		
 		addButton = new JButton("Add");
+		addButton.setEnabled(false);
+		addButton.addActionListener(new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	String location = (String) locationCombobox.getSelectedItem();
+		    	circuit.setCurrentNode(circuit.findNode(location));
+		        circuit.addSingleNewNode(nameTextfield.getText(), generateComponent());
+		        cleanUp();
+		        
+		    }
+		});;
 		
 		componentCombobox.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
@@ -166,6 +193,48 @@ public class AddSingleComponentWindow extends JFrame{
 		
 		mainPanel.add(newComponentPanel);
 		add(mainPanel);
+	}
+	
+	private boolean isNumber() {
+		try {
+			Integer.parseInt(valueTextfield.getText());
+		}
+		
+		catch(NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean isValidInput() {
+		String name = nameTextfield.getText();
+		return(!name.equals("") && !circuit.nameExist(name) && isNumber());
+	}
+	
+	private void cleanUp() {
+		this.dispose();
+	}
+	
+	private class canCreate implements DocumentListener{
+
+		@Override
+		public void changedUpdate(DocumentEvent arg0) {
+			addButton.setEnabled(isValidInput());
+			
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			addButton.setEnabled(isValidInput());
+			
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			addButton.setEnabled(isValidInput());
+			
+		}
+		
 	}
 
 }

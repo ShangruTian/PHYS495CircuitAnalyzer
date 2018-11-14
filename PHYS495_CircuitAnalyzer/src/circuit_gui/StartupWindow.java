@@ -121,7 +121,7 @@ public class StartupWindow extends JFrame{
 		anglePanel = new JPanel();
 		anglePanel.setLayout(new GridLayout(2,1));
 		
-		//this.circuit = new Circuit();
+		this.circuit = new Circuit();
 		
 		frequencySlider.addChangeListener(new ChangeListener() {
 	        @Override
@@ -172,7 +172,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
-				new AddSingleComponentWindow(null);
+				new AddSingleComponentWindow(circuit);
 			}
 
 		});
