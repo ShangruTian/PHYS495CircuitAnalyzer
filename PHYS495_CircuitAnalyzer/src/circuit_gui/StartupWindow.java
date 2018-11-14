@@ -182,7 +182,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
-				new DeleteSingleComponentWindow(null);
+				new DeleteSingleComponentWindow(circuit);
 			}
 
 		});
@@ -211,7 +211,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
-				new ViewCircuitWindow(null);
+				new ViewCircuitWindow(circuit);
 			}
 
 		});

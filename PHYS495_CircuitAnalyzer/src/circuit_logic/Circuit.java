@@ -22,6 +22,7 @@ public class Circuit {
 		end0.setName("Circuit End");
 		CircuitMap.put("start0", start0);
 		CircuitMap.put("end0", end0);
+		outputStartingNode = null;
 		JunctionNum ++;
 	}
 	

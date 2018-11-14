@@ -13,8 +13,14 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import circuit_logic.Circuit;
+import circuit_logic.CircuitComponent;
 
 public class ViewCircuitWindow extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -19286893548064587L;
+
 	private Circuit circuit;
 	
 	private JPanel mainPanel;
@@ -22,15 +28,18 @@ public class ViewCircuitWindow extends JFrame{
 	private JPanel setOutputPanel;
 	private JPanel allComponentsPanel;
 	
-	private JLabel circuitLabel;
+	
 	private JLabel selectOutputLabel;
 	
 	private JComboBox<String> componentCombobox;
 	
+	
 	private JButton setOutputButton;
 	
+	private JTextArea circuitLabel;
 	private JTextArea allComponents;
-	private JScrollPane sp;
+	private JScrollPane sp1;
+	private JScrollPane sp2;
 	
 	public ViewCircuitWindow(Circuit c) {
 		this.circuit = c;
@@ -56,28 +65,65 @@ public class ViewCircuitWindow extends JFrame{
 		allComponentsPanel = new JPanel();
 		allComponentsPanel.setLayout(new GridLayout(1,1));
 		
-		circuitLabel = new JLabel();
 		selectOutputLabel = new JLabel("Select an output terminal");
 		
 		componentCombobox = new JComboBox<String>();
 		
-		setOutputButton = new JButton("Set as output");
+		
+		circuitLabel = new JTextArea();
+		circuitLabel.setLineWrap(false);
+		String result = new String("");
+		for(String s:circuit.viewCircuit()) {
+			if(!s.equals("Circuit Start") && !s.equals("Circuit End") && !s.equals("(Output terminal)")) {
+				componentCombobox.addItem(s);
+			}
+			result += s;
+			if(!s.equals("Circuit End")) {result += " -> ";}
+		}
+		circuitLabel.setText(result);
+		sp1 = new JScrollPane(circuitLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		allComponents = new JTextArea();
-		sp = new JScrollPane(allComponents,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		allComponents.setLineWrap(true);
+		for(String s: circuit.getMap().keySet()) {
+			if(s.equals("start0") || s.equals("end0")) {}
+			else {
+				CircuitComponent curr = circuit.getMap().get(s).getComponent();
+				allComponents.append(s + ": " + curr.getType() + ", " + curr.getValue() + "  ");
+			}
+		}
+		sp2 = new JScrollPane(allComponents,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		setOutputButton = new JButton("Set as output");
+		setOutputButton.addActionListener(new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	String location = (String) componentCombobox.getSelectedItem();
+		    	if(location.startsWith("Parallel Section ")) {
+		    		char index = location.charAt(location.length()-1);
+		    		location = "end" + index;
+		    	}
+		    	circuit.setOutput(circuit.findNode(location));
+		        cleanUp();
+		        
+		    }
+		});
+	}
+	
+	private void cleanUp() {
+		this.dispose();
 	}
 	
 	public void createGUI() {
-		displayPanel.add(circuitLabel);
+		displayPanel.add(sp1);
 		mainPanel.add(displayPanel);
 		
 		setOutputPanel.add(selectOutputLabel);
 		setOutputPanel.add(componentCombobox);
 		setOutputPanel.add(setOutputButton);
-		mainPanel.add(setOutputPanel);
 		
-		allComponentsPanel.add(sp);
+		
+		allComponentsPanel.add(sp2);
 		mainPanel.add(allComponentsPanel);
+		mainPanel.add(setOutputPanel);
 		
 		add(mainPanel);
 	}
