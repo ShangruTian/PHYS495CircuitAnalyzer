@@ -126,6 +126,10 @@ public class AddSingleComponentWindow extends JFrame{
 		int i = 0;
 		for(String s: circuit.getMap().keySet()) {
 			if(s.equals("end0")) {}
+			else if(s.equals("start0")) {
+				locations[i] = new String("Circuit start");
+				++i;
+			}
 			else {
 				locations[i] = s;
 				++i;
@@ -143,6 +147,9 @@ public class AddSingleComponentWindow extends JFrame{
 		addButton.addActionListener(new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		    	String location = (String) locationCombobox.getSelectedItem();
+		    	if(location.equals("Circuit start")) {
+		    		location = "start0";
+		    	}
 		    	circuit.setCurrentNode(circuit.findNode(location));
 		        circuit.addSingleNewNode(nameTextfield.getText(), generateComponent());
 		        cleanUp();
