@@ -3,10 +3,10 @@ package circuit_logic;
 public class JunctionEnd extends CircuitComponent{
 	private ComplexNumber numerator;
 	private ComplexNumber denominator;
-	public JunctionEnd(float value) {
+	public JunctionEnd(double value) {
 		super("JunctionEnd",value);
-		numerator = new ComplexNumber((float)1,(float)0);
-		denominator = new ComplexNumber((float)0,(float)0);
+		numerator = new ComplexNumber(1,0);
+		denominator = new ComplexNumber(0,0);
 		
 	}
 	

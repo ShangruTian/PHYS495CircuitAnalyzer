@@ -33,6 +33,26 @@ public class Circuit {
 		this.outputStartingNode = node;
 	}
 	
+	public boolean hasOutput() {
+		return outputStartingNode != null;
+	}
+	
+	public void changeOutput() {
+		if(outputStartingNode == null) {}
+		
+		else if(outputStartingNode.prev() == start0 && outputStartingNode.next() == end0) {
+			outputStartingNode = null;
+		}
+		
+		else if(outputStartingNode.prev() == start0 && outputStartingNode.next() != end0) {
+			outputStartingNode = outputStartingNode.next();
+		}
+		
+		else {
+			outputStartingNode = outputStartingNode.prev();
+		}
+	}
+	
 	public boolean nameExist(String name) {
 		return CircuitMap.containsKey(name);
 	}
@@ -90,6 +110,9 @@ public class Circuit {
 	
 	public void deleteSingleNode(String name) {
 		CircuitNode toDelete = CircuitMap.get(name);
+		if(toDelete == outputStartingNode) {
+			changeOutput();
+		}
 		CircuitNode toDeletePrev = toDelete.prev();
 		
 		//if the node is right before a parallel section
@@ -145,6 +168,9 @@ public class Circuit {
 	
 	public void removeParallelSection(String JunctionEndNum) {
 		CircuitNode end = CircuitMap.get("end" + JunctionEndNum);
+		if(end == outputStartingNode) {
+			changeOutput();
+		}
 		CircuitNode prev = end.prev();
 		CircuitNode next = end.next();
 		prev.setNext(next);
@@ -185,7 +211,7 @@ public class Circuit {
 	
 	public void addSingleBranch(String JunctionEndNum) {
 		CircuitNode end = CircuitMap.get("end" + JunctionEndNum);
-		float value = end.prev().getChildren().get(0).getComponent().getValue();
+		double value = end.prev().getChildren().get(0).getComponent().getValue();
 		CircuitNode newNode = new CircuitNode(new JunctionStart(value));
 		newNode.setNext(end);
 		newNode.setPrev(end.prev());
@@ -263,6 +289,31 @@ public class Circuit {
 		
 		
 		
+	}
+	
+	public String findLeadingVector(double frequency) {
+		ComplexNumber outputImpedance = calculateTotalImpedance(frequency);
+		CircuitNode curr = start0.next();
+		ComplexNumber inputImpedance = new ComplexNumber(0,0);
+		while(curr != outputStartingNode) {
+			if(curr.getComponent().getType() == "JunctionEnd") {
+				inputImpedance.add(calculateParallelImpedance(curr,frequency));
+				curr = curr.next();
+			}
+			else {
+				inputImpedance.add(curr.getComponent().calculateImpedance(frequency));
+				curr = curr.next();
+			}
+		}
+		if(inputImpedance.getImaginaryPart() > outputImpedance.getImaginaryPart()) {
+			return new String("Input leads output");
+		}
+		
+		else if(inputImpedance.getImaginaryPart() < outputImpedance.getImaginaryPart()) {
+			return new String("Output leads input");
+		}
+		
+		else return new String("Input in phase with output");
 	}
 	
 	public Vector<String> viewCircuit(){

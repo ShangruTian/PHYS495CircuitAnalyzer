@@ -3,10 +3,10 @@ package circuit_logic;
 //on this class
 
 public abstract class CircuitComponent {
-	protected float value;
+	protected double value;
 	protected String type;
 	
-	public CircuitComponent(String type, float value) {
+	public CircuitComponent(String type, double value) {
 		this.type = type;
 		this.value = value;
 	}
@@ -15,7 +15,7 @@ public abstract class CircuitComponent {
 		this.type = type;
 	}
 	
-	public float getValue() {
+	public double getValue() {
 		return value;
 	}
 	

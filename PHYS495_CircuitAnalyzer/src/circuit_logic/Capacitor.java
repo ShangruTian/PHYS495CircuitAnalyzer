@@ -1,11 +1,11 @@
 package circuit_logic;
 
 public class Capacitor extends CircuitComponent{
-	public Capacitor(float value) {
+	public Capacitor(double value) {
 		super("Capacitor",value);
 	}
 	public ComplexNumber calculateImpedance(double frequency) {
-		if(frequency == 0) return new ComplexNumber((float)0,(float)Integer.MAX_VALUE);
-		return new ComplexNumber((float)0,(float) (-1/(frequency * value)));
+		if(frequency == 0) return new ComplexNumber(0,Integer.MAX_VALUE);
+		return new ComplexNumber(0,(-1/(frequency * value)));
 	}
 }

@@ -45,6 +45,51 @@ public class AddSingleComponentWindow extends JFrame{
 		this.setVisible(true);
 	}
 	
+	private CircuitComponent generateComponent() {
+		if(componentCombobox.getSelectedIndex() == 0) {
+			//a resistor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Resistor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if (unitCombobox.getSelectedIndex() == 1) {
+				return new Resistor(1000 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else {
+				return new Resistor(1000000 * Integer.parseInt(valueTextfield.getText()));
+			}
+		}
+		
+		else if(componentCombobox.getSelectedIndex() == 1) {
+			//a capacitor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Capacitor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if(unitCombobox.getSelectedIndex() == 1) {
+				return new Capacitor(0.001 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else {
+				return new Capacitor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+			}
+		}
+		
+		else {
+			//an inductor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Inductor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if(unitCombobox.getSelectedIndex() == 1) {
+				return new Inductor(0.001 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else return new Inductor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+		}
+	}
+	
 	public void initializeComponents() {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(2,1));

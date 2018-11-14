@@ -1,19 +1,19 @@
 package circuit_logic;
 
 public class ComplexNumber {
-	private float real_part;
-	private float imaginary_part;
+	private double real_part;
+	private double imaginary_part;
 	
-	public ComplexNumber(float real, float img) {
+	public ComplexNumber(double real, double img) {
 		this.real_part = real;
 		this.imaginary_part = img;
 	}
 	
-	public float getRealPart() {
+	public double getRealPart() {
 		return this.real_part;
 	}
 	
-	public float getImaginaryPart() {
+	public double getImaginaryPart() {
 		return this.imaginary_part;
 	}
 	
@@ -28,16 +28,16 @@ public class ComplexNumber {
 	}
 	
 	public void multiply(ComplexNumber c) {
-		float newRealPart = this.real_part * c.getRealPart() - (this.imaginary_part * c.getImaginaryPart());
-		float newImagingaryPart = this.real_part * c.getImaginaryPart() + this.imaginary_part * c.getRealPart();
+		double newRealPart = this.real_part * c.getRealPart() - (this.imaginary_part * c.getImaginaryPart());
+		double newImagingaryPart = this.real_part * c.getImaginaryPart() + this.imaginary_part * c.getRealPart();
 		this.real_part = newRealPart;
 		this.imaginary_part = newImagingaryPart;
 	}
 	
 	public void divide(ComplexNumber c) {
-		float commonDenominator = c.getRealPart() * c.getRealPart() + c.getImaginaryPart() * c.getImaginaryPart();
-		float newRealPart = this.real_part * c.getRealPart() + this.imaginary_part * c.getImaginaryPart();
-		float newImaginaryPart = this.imaginary_part * c.getRealPart() - this.real_part * c.getImaginaryPart();
+		double commonDenominator = c.getRealPart() * c.getRealPart() + c.getImaginaryPart() * c.getImaginaryPart();
+		double newRealPart = this.real_part * c.getRealPart() + this.imaginary_part * c.getImaginaryPart();
+		double newImaginaryPart = this.imaginary_part * c.getRealPart() - this.real_part * c.getImaginaryPart();
 		this.real_part = newRealPart/commonDenominator;
 		this.imaginary_part = newImaginaryPart/commonDenominator;
 	}

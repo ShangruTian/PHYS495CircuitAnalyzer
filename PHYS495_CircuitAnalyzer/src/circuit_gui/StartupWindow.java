@@ -14,15 +14,12 @@ public class StartupWindow extends JFrame{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	//private JSlider voltageSlider;
 	private JSlider frequencySlider;
 	
-	//private JLabel voltageLabel;
 	private JLabel frequencyLabel;
 	private JLabel impedanceLabel;
-	//private JLabel amplitudeLabel;
 	private JLabel angleLabel;
-	//private JLabel currNodeLabel;
+	private JLabel leadLabel;
 	
 	private JButton addSingleComponent;
 	private JButton deleteSingleComponent;
@@ -37,6 +34,7 @@ public class StartupWindow extends JFrame{
 	private JPanel buttonPanel;
 	private JPanel sliderPanel;
 	private JPanel displayPanel;
+	private JPanel anglePanel;
 	
 	private Circuit circuit;
 	
@@ -52,8 +50,10 @@ public class StartupWindow extends JFrame{
 	
 
 	public static void main(String[] args) {
-		String test = "Parallel Section 0";
-		System.out.println("end" + test.charAt(test.length()-1));
+		String[] test1 = new String[] {"Kappa","Keepo","Kippa"};
+		JComboBox<String> test = new JComboBox<String>(test1);
+		test.setSelectedIndex(1);
+		System.out.println(test.getSelectedItem());
 		StartupWindow sw = new StartupWindow();
 	}
 	
@@ -104,6 +104,7 @@ public class StartupWindow extends JFrame{
 		impedanceLabel = new JLabel("Impedance:",JLabel.CENTER);
 		//amplitudeLabel = new JLabel("Current Amplitude:",JLabel.CENTER);
 		angleLabel = new JLabel("Phase Angle:",JLabel.CENTER);
+		leadLabel = new JLabel("Lead:",JLabel.CENTER);
 		
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(3,1));
@@ -117,12 +118,22 @@ public class StartupWindow extends JFrame{
 		displayPanel = new JPanel();
 		displayPanel.setLayout(new GridLayout(1,4));
 		
+		anglePanel = new JPanel();
+		anglePanel.setLayout(new GridLayout(2,1));
+		
 		//this.circuit = new Circuit();
 		
 		frequencySlider.addChangeListener(new ChangeListener() {
 	        @Override
 	        public void stateChanged(ChangeEvent ce) {
 	        	frequencyLabel.setText("Frequency: "+ frequencySlider.getValue() + "Hz");
+	        	if(canCalculate) {
+	        		ComplexNumber imp =circuit.calculateTotalImpedance(frequencySlider.getValue());
+	        		impedanceLabel.setText("Impedance: "+ imp.getRealPart() + "+" + imp.getImaginaryPart() + "j");
+	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
+	        		angleLabel.setText("Phase angle: " + ang + "Pi");
+	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));
+	        	}
 	        }
 	    });
 	}
@@ -144,7 +155,11 @@ public class StartupWindow extends JFrame{
 		displayPanel.add(changeComponentButton);
 		displayPanel.add(calculateButton);
 		displayPanel.add(impedanceLabel);
-		displayPanel.add(angleLabel);
+		
+		anglePanel.add(leadLabel);
+		anglePanel.add(angleLabel);
+		displayPanel.add(anglePanel);
+		
 		mainPanel.add(displayPanel);
 		
 		add(mainPanel);
