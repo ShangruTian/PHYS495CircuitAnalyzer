@@ -31,6 +31,7 @@ public class DeleteSingleComponentWindow extends JFrame{
 		createGUI();
 		this.addWindowListener(new WindowAdapter() {
 			   public void windowClosing(WindowEvent evt) {
+				     circuit.windowEnableButtons();
 				     cleanUp();
 				   }
 				  });

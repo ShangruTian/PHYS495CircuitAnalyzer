@@ -50,6 +50,7 @@ public class AddSingleComponentWindow extends JFrame{
 		createGUI();
 		this.addWindowListener(new WindowAdapter() {
 			   public void windowClosing(WindowEvent evt) {
+				     circuit.windowEnableButtons();
 				     cleanUp();
 				   }
 				  });
@@ -60,44 +61,44 @@ public class AddSingleComponentWindow extends JFrame{
 		if(componentCombobox.getSelectedIndex() == 0) {
 			//a resistor
 			if(unitCombobox.getSelectedIndex() == 0) {
-				return new Resistor(Integer.parseInt(valueTextfield.getText()));
+				return new Resistor(Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else if (unitCombobox.getSelectedIndex() == 1) {
-				return new Resistor(1000 * Integer.parseInt(valueTextfield.getText()));
+				return new Resistor(1000 * Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else {
-				return new Resistor(1000000 * Integer.parseInt(valueTextfield.getText()));
+				return new Resistor(1000000 * Double.parseDouble(valueTextfield.getText()));
 			}
 		}
 		
 		else if(componentCombobox.getSelectedIndex() == 1) {
 			//a capacitor
 			if(unitCombobox.getSelectedIndex() == 0) {
-				return new Capacitor(Integer.parseInt(valueTextfield.getText()));
+				return new Capacitor(Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else if(unitCombobox.getSelectedIndex() == 1) {
-				return new Capacitor(0.001 * Integer.parseInt(valueTextfield.getText()));
+				return new Capacitor(0.001 * Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else {
-				return new Capacitor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+				return new Capacitor(0.000001 * Double.parseDouble(valueTextfield.getText()));
 			}
 		}
 		
 		else {
 			//an inductor
 			if(unitCombobox.getSelectedIndex() == 0) {
-				return new Inductor(Integer.parseInt(valueTextfield.getText()));
+				return new Inductor(Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else if(unitCombobox.getSelectedIndex() == 1) {
-				return new Inductor(0.001 * Integer.parseInt(valueTextfield.getText()));
+				return new Inductor(0.001 * Double.parseDouble(valueTextfield.getText()));
 			}
 			
-			else return new Inductor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+			else return new Inductor(0.000001 * Double.parseDouble(valueTextfield.getText()));
 		}
 	}
 	
@@ -133,7 +134,7 @@ public class AddSingleComponentWindow extends JFrame{
 		
 
 		for(String s: circuit.getMap().keySet()) {
-			if(!s.startsWith("end") && !s.startsWith("start")) {
+			if(!s.startsWith("start") && !s.equals("end0")) {
 				validLocations.addElement(s);
 			}
 			if(s.equals("start0")) {
@@ -143,8 +144,15 @@ public class AddSingleComponentWindow extends JFrame{
 		locations = new String[validLocations.size()];
 		int i = 0;
 		for(String s: validLocations) {
-				locations[i] = s;
-				++i;
+				if(s.startsWith("end")) {
+					String num = s.substring(3);
+					locations[i] = new String("Parallel Section " + num);
+					++i;
+				}
+				else {
+					locations[i] = s;
+					++i;
+				}
 			
 		}
 		
@@ -218,7 +226,7 @@ public class AddSingleComponentWindow extends JFrame{
 	
 	private boolean isNumber() {
 		try {
-			Integer.parseInt(valueTextfield.getText());
+			Double.parseDouble(valueTextfield.getText());
 		}
 		
 		catch(NumberFormatException e) {

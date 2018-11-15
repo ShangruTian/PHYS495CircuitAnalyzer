@@ -2,6 +2,8 @@ package circuit_gui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -12,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import circuit_logic.Capacitor;
 import circuit_logic.Circuit;
@@ -20,6 +24,11 @@ import circuit_logic.CircuitNode;
 import circuit_logic.Inductor;
 import circuit_logic.Resistor;
 public class EditBranchWindow extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5855111411718122458L;
+
 	private Circuit circuit;
 	
 	private JPanel mainPanel;
@@ -69,6 +78,12 @@ public class EditBranchWindow extends JFrame{
 		initializeComponents();
 		disableAll();
 		createGUI();
+		this.addWindowListener(new WindowAdapter() {
+			   public void windowClosing(WindowEvent evt) {
+				     circuit.windowEnableButtons();
+				     cleanUp();
+				   }
+				  });
 		this.setVisible(true);
 	}
 	
@@ -100,7 +115,9 @@ public class EditBranchWindow extends JFrame{
 		nameLabel = new JLabel("Enter name:");
 		
 		valueTextfield = new JTextField();
+		valueTextfield.getDocument().addDocumentListener(new canCreate());
 		nameTextfield = new JTextField();
+		nameTextfield.getDocument().addDocumentListener(new canCreate());
 		
 		viewBranchCombobox = new JComboBox<Integer>();		
 		deleteBranchCombobox = new JComboBox<Integer>();
@@ -180,10 +197,13 @@ public class EditBranchWindow extends JFrame{
 		        }
 		        else if(((String)locationCombobox.getSelectedItem()).equals("(Choose a section)")) {
 		        	viewBranchCombobox.removeAllItems();
+		        	deleteBranchCombobox.removeAllItems();
 		        	disableAll();
 		        }
 		        else {
+		        	viewSelectedBranch.setText("");
 		        	viewBranchCombobox.removeAllItems();
+		        	deleteBranchCombobox.removeAllItems();
 		        	String location = (String)locationCombobox.getSelectedItem();
 		        	String num = location.substring(17);
 		        	String name = new String("end" + num);
@@ -192,8 +212,10 @@ public class EditBranchWindow extends JFrame{
 		        	for(int i = 0;i < size;++i) {
 		        		int index = i + 1;
 		        		viewBranchCombobox.addItem(index);
+		        		deleteBranchCombobox.addItem(index);
 		        	}
-		        	viewButton.setEnabled(true);
+		        	enableAll();
+		        	addButton.setEnabled(isValidInput());
 		        }
 		    }
 		});
@@ -210,6 +232,30 @@ public class EditBranchWindow extends JFrame{
 		        }
 		        
 		        viewSelectedBranch.setText(result);
+		        
+		    }
+		});
+		
+		addButton.addActionListener(new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	String section = (String)locationCombobox.getSelectedItem();
+		    	String num = section.substring(17);
+		    	circuit.addSingleBranch(num);
+		    	String target = new String("end" + num);
+		    	int size = circuit.findNode(target).prev().getChildren().size();
+		    	circuit.addFirstNodeToBranch(num, size-1, nameTextfield.getText(), generateComponent());
+		        cleanUp();
+		        
+		    }
+		});
+		
+		deleteButton.addActionListener(new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	String section = (String)locationCombobox.getSelectedItem();
+		    	String num = section.substring(17);
+		    	int branch = deleteBranchCombobox.getSelectedIndex();
+		    	circuit.removeSingleBranch(num, branch);
+		        cleanUp();		        
 		    }
 		});
 		
@@ -269,49 +315,88 @@ public class EditBranchWindow extends JFrame{
 		if(componentCombobox.getSelectedIndex() == 0) {
 			//a resistor
 			if(unitCombobox.getSelectedIndex() == 0) {
-				return new Resistor(Integer.parseInt(valueTextfield.getText()));
+				return new Resistor(Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else if (unitCombobox.getSelectedIndex() == 1) {
-				return new Resistor(1000 * Integer.parseInt(valueTextfield.getText()));
+				return new Resistor(1000 * Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else {
-				return new Resistor(1000000 * Integer.parseInt(valueTextfield.getText()));
+				return new Resistor(1000000 * Double.parseDouble(valueTextfield.getText()));
 			}
 		}
 		
 		else if(componentCombobox.getSelectedIndex() == 1) {
 			//a capacitor
 			if(unitCombobox.getSelectedIndex() == 0) {
-				return new Capacitor(Integer.parseInt(valueTextfield.getText()));
+				return new Capacitor(Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else if(unitCombobox.getSelectedIndex() == 1) {
-				return new Capacitor(0.001 * Integer.parseInt(valueTextfield.getText()));
+				return new Capacitor(0.001 * Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else {
-				return new Capacitor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+				return new Capacitor(0.000001 * Double.parseDouble(valueTextfield.getText()));
 			}
 		}
 		
 		else {
 			//an inductor
 			if(unitCombobox.getSelectedIndex() == 0) {
-				return new Inductor(Integer.parseInt(valueTextfield.getText()));
+				return new Inductor(Double.parseDouble(valueTextfield.getText()));
 			}
 			
 			else if(unitCombobox.getSelectedIndex() == 1) {
-				return new Inductor(0.001 * Integer.parseInt(valueTextfield.getText()));
+				return new Inductor(0.001 * Double.parseDouble(valueTextfield.getText()));
 			}
 			
-			else return new Inductor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+			else return new Inductor(0.000001 * Double.parseDouble(valueTextfield.getText()));
 		}
+	}
+	
+	
+	private boolean isNumber() {
+		try {
+			Double.parseDouble(valueTextfield.getText());
+		}
+		
+		catch(NumberFormatException e) {
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean isValidInput() {
+		String name = nameTextfield.getText();
+		return(!name.equals("") && !circuit.nameExist(name) && isNumber());
 	}
 	
 	private void cleanUp() {
 		circuit.windowEnableButtons();
 		this.dispose();
+	}
+	
+	private class canCreate implements DocumentListener{
+
+		@Override
+		public void changedUpdate(DocumentEvent arg0) {
+			addButton.setEnabled(isValidInput());
+			
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent arg0) {
+			addButton.setEnabled(isValidInput());
+			
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent arg0) {
+			addButton.setEnabled(isValidInput());
+			
+		}
+		
 	}
 }

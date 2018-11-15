@@ -10,6 +10,11 @@ public class JunctionEnd extends CircuitComponent{
 		
 	}
 	
+	public void reset() {
+		numerator = new ComplexNumber(1,0);
+		denominator = new ComplexNumber(0,0);
+	}
+	
 	public void updateImpedance(ComplexNumber c) {
 		numerator.multiply(c);
 		denominator.add(c);

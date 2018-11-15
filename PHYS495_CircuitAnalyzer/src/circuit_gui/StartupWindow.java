@@ -2,6 +2,8 @@ package circuit_gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -50,12 +52,7 @@ public class StartupWindow extends JFrame{
 	
 
 	public static void main(String[] args) {
-		String test = "Parallel Section 123";
-		String test2 = "end0";
-		String res = test.substring(17);
-		String res2 = test2.substring(3);
-		System.out.println(res);
-		System.out.println(res2);
+		//System.out.println("debug:");
 		StartupWindow sw = new StartupWindow();
 	}
 	
@@ -104,7 +101,6 @@ public class StartupWindow extends JFrame{
 		
 		
 		impedanceLabel = new JLabel("Impedance:",JLabel.CENTER);
-		//amplitudeLabel = new JLabel("Current Amplitude:",JLabel.CENTER);
 		angleLabel = new JLabel("Phase Angle:",JLabel.CENTER);
 		leadLabel = new JLabel("Lead:",JLabel.CENTER);
 		
@@ -130,11 +126,16 @@ public class StartupWindow extends JFrame{
 	        public void stateChanged(ChangeEvent ce) {
 	        	frequencyLabel.setText("Frequency: "+ frequencySlider.getValue() + "Hz");
 	        	if(canCalculate) {
-	        		ComplexNumber imp =circuit.calculateTotalImpedance(frequencySlider.getValue());
-	        		impedanceLabel.setText("Impedance: "+ imp.getRealPart() + "+" + imp.getImaginaryPart() + "j");
-	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
-	        		angleLabel.setText("Phase angle: " + ang + "Pi");
-	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));
+	        		canCalculate = false;
+	        		JSlider js = (JSlider)ce.getSource();
+	        		double frequency = (double)js.getValue();
+	        		ComplexNumber imp =circuit.calculateTotalImpedance(frequency);	
+	        		impedanceLabel.setText("Impedance: "+ (float)imp.getRealPart() + "+" + (float)imp.getImaginaryPart() + "j");
+	        		double ang = circuit.calculatePhaseAngle(frequency);
+	        		angleLabel.setText("Phase angle(degree): " + (float)ang * 57.2958);
+	        		leadLabel.setText(circuit.findLeadingVector(frequency));
+	        		canCalculate = true;
+	        		//System.out.println("output: " + imp.getRealPart() + " " + imp.getImaginaryPart());
 	        	}
 	        }
 	    });
@@ -201,6 +202,9 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
+				impedanceLabel.setText("Impedance: ");
+				angleLabel.setText("Phase angle(degree): ");
+				leadLabel.setText("Lead: ");
 				new AddSingleComponentWindow(circuit);
 			}
 
@@ -212,6 +216,9 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
+				impedanceLabel.setText("Impedance: ");
+				angleLabel.setText("Phase angle(degree): ");
+				leadLabel.setText("Lead: ");
 				new DeleteSingleComponentWindow(circuit);
 			}
 
@@ -223,6 +230,9 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
+				impedanceLabel.setText("Impedance: ");
+				angleLabel.setText("Phase angle(degree): ");
+				leadLabel.setText("Lead: ");
 				new AddParallelSectionWindow(circuit);
 			}
 
@@ -233,6 +243,9 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
+				impedanceLabel.setText("Impedance: ");
+				angleLabel.setText("Phase angle(degree): ");
+				leadLabel.setText("Lead: ");
 				new DeleteParallelSectionWindow(circuit);
 			}
 
@@ -244,6 +257,9 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
+				impedanceLabel.setText("Impedance: ");
+				angleLabel.setText("Phase angle(degree): ");
+				leadLabel.setText("Lead: ");
 				new ViewCircuitWindow(circuit);
 			}
 
@@ -255,6 +271,9 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
+				impedanceLabel.setText("Impedance: ");
+				angleLabel.setText("Phase angle(degree): ");
+				leadLabel.setText("Lead: ");
 				new EditBranchWindow(circuit);
 			}
 
@@ -266,7 +285,31 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
+				impedanceLabel.setText("Impedance: ");
+				angleLabel.setText("Phase angle(degree): ");
+				leadLabel.setText("Lead: ");
 				new ChangeComponentWindow(circuit);
+			}
+
+		});
+		
+		calculateButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!circuit.hasOutput()) {
+					impedanceLabel.setText("Impedance:(no output)");
+					angleLabel.setText("Phase angle:(no output)");
+					leadLabel.setText("Lead:(no output)");
+				}
+				else {
+					canCalculate = true;
+					ComplexNumber imp =circuit.calculateTotalImpedance(frequencySlider.getValue());	
+	        		impedanceLabel.setText("Impedance: "+ (float)imp.getRealPart() + "+" + (float)imp.getImaginaryPart() + "j");
+	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
+	        		angleLabel.setText("Phase angle(degree): " + (float)ang * 57.2958);
+	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));
+				}
 			}
 
 		});

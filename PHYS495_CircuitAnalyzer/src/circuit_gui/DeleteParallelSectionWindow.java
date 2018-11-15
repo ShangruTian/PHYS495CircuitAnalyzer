@@ -3,6 +3,8 @@ package circuit_gui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -33,6 +35,12 @@ public class DeleteParallelSectionWindow extends JFrame{
 			this.setResizable(false);
 			initializeComponents();
 			createGUI();
+			this.addWindowListener(new WindowAdapter() {
+				   public void windowClosing(WindowEvent evt) {
+					     circuit.windowEnableButtons();
+					     cleanUp();
+					   }
+					  });
 			this.setVisible(true);
 		}
 		

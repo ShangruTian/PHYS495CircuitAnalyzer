@@ -238,13 +238,14 @@ public class Circuit {
 		CircuitNode newNode = new CircuitNode(new JunctionStart(value));
 		newNode.setNext(end);
 		newNode.setPrev(end.prev());
-		end.prev().getChildren().addElement(newNode);
+		end.prev().addBranch(newNode);
 	}
 	
 	//only called when curr is a junction end
 	public ComplexNumber calculateParallelImpedance(CircuitNode node,double frequency){
 		CircuitNode prev = node.prev();
 		JunctionEnd je = (JunctionEnd) node.getComponent();
+		je.reset();
 		boolean isEmpty = true;
 		for(int i = 0;i < prev.getChildren().size();++i) {
 			CircuitNode start = prev.getChildren().get(i);
@@ -301,14 +302,15 @@ public class Circuit {
 				curr = curr.next();
 			}
 		}
-		
+		System.out.println("input: " + inputImpedance.getRealPart() + "  " + inputImpedance.getImaginaryPart());
 		inputImpedance.add(outputImpedance);
-		double a = inputImpedance.getRealPart() * outputImpedance.getRealPart() + inputImpedance.getImaginaryPart() + outputImpedance.getImaginaryPart();
-		double b = Math.sqrt(inputImpedance.getRealPart() * inputImpedance.getRealPart() + inputImpedance.getImaginaryPart() * inputImpedance.getImaginaryPart());
-		double c = Math.sqrt(outputImpedance.getRealPart() * outputImpedance.getRealPart() + outputImpedance.getImaginaryPart() * outputImpedance.getImaginaryPart());
-		double cosineValue = a/(b * c);
 		
-		return Math.acos(cosineValue);
+		if(inputImpedance.getRealPart() == 0) {
+			return Math.atan(Integer.MAX_VALUE);
+		}
+		
+		else return Math.atan(inputImpedance.getImaginaryPart()/inputImpedance.getRealPart());
+		
 		
 		
 		
@@ -347,7 +349,10 @@ public class Circuit {
 			}
 			
 			else if(node.getComponent().getType().equals("JunctionEnd")) {
-				result.add("Parallel Section " + node.getComponent().getValue());
+				if(node == outputStartingNode) {
+					result.add("(Output terminal)");
+				}
+				result.add("Parallel Section " + (int)node.getComponent().getValue());
 			}
 			
 			else if(node == outputStartingNode) {
@@ -372,7 +377,7 @@ public class Circuit {
 		start = start.next();
 		while(start != end) {
 			if(start.getComponent().getType().equals("JunctionEnd")) {
-				result.add("Parallel Section " + start.getComponent().getValue());
+				result.add("Parallel Section " + (int)start.getComponent().getValue());
 				start = start.next();
 			}
 			
