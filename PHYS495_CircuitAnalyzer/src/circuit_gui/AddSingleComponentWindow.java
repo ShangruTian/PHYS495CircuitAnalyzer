@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.Vector;
 
 import javax.swing.*;
@@ -155,6 +156,7 @@ public class AddSingleComponentWindow extends JFrame{
 				}
 			
 		}
+		Arrays.sort(locations);
 		
 		unitCombobox = new JComboBox<String>(resistorUnits);
 		unitCombobox.setSelectedItem("Ohms");
