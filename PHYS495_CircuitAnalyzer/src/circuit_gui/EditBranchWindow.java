@@ -201,9 +201,9 @@ public class EditBranchWindow extends JFrame{
 		viewButton.addActionListener(new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		    	String result = new String("");
-		    	String section = Integer.toString(locationCombobox.getSelectedIndex());
+		    	String section = (String)locationCombobox.getSelectedItem();
 		    	String num = section.substring(17);
-		    	int branch = (int)viewBranchCombobox.getSelectedItem();
+		    	int branch = viewBranchCombobox.getSelectedIndex();
 		        for(String s: circuit.viewBranch(num, branch)) {
 					result += s;
 					if(!s.equals("Branch End")) {result += " -> ";}
