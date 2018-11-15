@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Vector;
 
 import javax.swing.*;
 
@@ -40,15 +41,19 @@ public class DeleteSingleComponentWindow extends JFrame{
 		mainPanel = new JPanel(new GridLayout(1,3));
 		
 		deleteLabel = new JLabel("Delete a component");
-		int sizeOfHashmap = circuit.getMap().size();
-		locations = new String[sizeOfHashmap-2];
-		int i = 0;
+		Vector<String> validLocations = new Vector<String>();
+		
+
 		for(String s: circuit.getMap().keySet()) {
-			if(s.equals("end0") || s.equals("start0")) {}
-			else {
+			if(!s.startsWith("end") || !s.startsWith("start")) {
+				validLocations.addElement(s);
+			}	
+		}
+		locations = new String[validLocations.size()];
+		int i = 0;
+		for(String s: validLocations) {
 				locations[i] = s;
 				++i;
-			}
 			
 		}
 		componentCombobox = new JComboBox<String>(locations);

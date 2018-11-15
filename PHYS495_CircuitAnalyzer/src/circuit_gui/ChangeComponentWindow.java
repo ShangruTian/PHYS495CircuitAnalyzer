@@ -92,7 +92,7 @@ private static final long serialVersionUID = 1;
 		String[] locations = new String[sizeOfHashmap-2];
 		int i = 0;
 		for(String s: circuit.getMap().keySet()) {
-			if(s.equals("start0") || s.equals("end0")) {}
+			if(s.startsWith("end") || s.startsWith("start")) {}
 			else {
 				locations[i] = s;
 				++i;

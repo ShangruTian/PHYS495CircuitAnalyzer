@@ -159,7 +159,7 @@ public class AddParallelSectionWindow extends JFrame{
 		for(String s: validLocations) {
 			if(s.equals("end0")) {}
 			else if(s.startsWith("end")) {
-				locations[i] = new String("Parallel Section " + s.charAt(s.length()-1));
+				locations[i] = new String("Parallel Section " + s.substring(3));
 				++i;
 			}
 			else if(s.equals("start0")) {
@@ -239,8 +239,8 @@ public class AddParallelSectionWindow extends JFrame{
 		    	if(location.equals("Circuit start")) {
 		    		location = "start0";
 		    	}
-		    	if(location.startsWith("Parallel Section")) {
-		    		char num = location.charAt(location.length()-1);
+		    	if(location.startsWith("Parallel Section ")) {
+		    		String num = location.substring(17);
 		    		location = "end" + num;
 		    	}
 		    	circuit.setCurrentNode(circuit.findNode(location));

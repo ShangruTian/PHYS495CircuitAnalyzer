@@ -106,7 +106,7 @@ public class ViewCircuitWindow extends JFrame{
 		    public void actionPerformed(ActionEvent e) {
 		    	String location = (String) componentCombobox.getSelectedItem();
 		    	if(location.startsWith("Parallel Section ")) {
-		    		char index = location.charAt(location.length()-1);
+		    		String index = location.substring(17);
 		    		location = "end" + index;
 		    	}
 		    	circuit.setOutput(circuit.findNode(location));

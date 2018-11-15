@@ -50,10 +50,12 @@ public class StartupWindow extends JFrame{
 	
 
 	public static void main(String[] args) {
-		String[] test1 = new String[] {"Kappa","Keepo","Kippa"};
-		JComboBox<String> test = new JComboBox<String>(test1);
-		test.setSelectedIndex(1);
-		System.out.println(test.getSelectedItem());
+		String test = "Parallel Section 123";
+		String test2 = "end0";
+		String res = test.substring(17);
+		String res2 = test2.substring(3);
+		System.out.println(res);
+		System.out.println(res2);
 		StartupWindow sw = new StartupWindow();
 	}
 	
@@ -231,7 +233,7 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				new DeleteParallelSectionWindow(null);
+				new DeleteParallelSectionWindow(circuit);
 			}
 
 		});

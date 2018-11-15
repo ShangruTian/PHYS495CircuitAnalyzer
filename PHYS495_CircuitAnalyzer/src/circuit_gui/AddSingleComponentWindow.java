@@ -137,6 +137,10 @@ public class AddSingleComponentWindow extends JFrame{
 				locations[i] = new String("Circuit start");
 				++i;
 			}
+			else if(s.startsWith("end")) {
+				String temp = new String("Parallel Section " + s.substring(3));
+				locations[i] = temp;
+			}
 			else {
 				locations[i] = s;
 				++i;
@@ -156,6 +160,9 @@ public class AddSingleComponentWindow extends JFrame{
 		    	String location = (String) locationCombobox.getSelectedItem();
 		    	if(location.equals("Circuit start")) {
 		    		location = "start0";
+		    	}
+		    	else if(location.startsWith("Parallel Section ")) {
+		    		location = "end" + location.substring(17);
 		    	}
 		    	circuit.setCurrentNode(circuit.findNode(location));
 		        circuit.addSingleNewNode(nameTextfield.getText(), generateComponent());

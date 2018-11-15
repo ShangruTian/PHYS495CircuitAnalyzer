@@ -202,11 +202,12 @@ public class Circuit {
 			start = start.next();
 			while(start != end) {
 				if(start.getComponent().getType().equals("JunctionEnd")) {
-					removeParallelSection(Double.toString(start.getComponent().getValue()));
+					removeParallelSection(Integer.toString((int)start.getComponent().getValue()));
 					start = start.next();
 				}
 				else {
 					CircuitMap.remove(start.getName());
+					start = start.next();
 				}
 			}
 		}

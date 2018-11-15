@@ -1,6 +1,9 @@
 package circuit_gui;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +22,7 @@ public class DeleteParallelSectionWindow extends JFrame{
 		private JLabel deleteLabel;
 		
 		private JComboBox<String> componentCombobox;
+		private String[] locations;
 		
 		private JButton deleteButton;
 		public DeleteParallelSectionWindow(Circuit c) {
@@ -37,9 +41,45 @@ public class DeleteParallelSectionWindow extends JFrame{
 			
 			deleteLabel = new JLabel("Delete a parallel section");
 			
-			componentCombobox = new JComboBox<String>();
+			Vector<String> validLocations = new Vector<String>();
 			
-			deleteButton = new JButton("Delete");
+
+			for(String s: circuit.getMap().keySet()) {
+				if(s.startsWith("end") && !s.equals("end0")) {
+					validLocations.addElement(s);
+				}	
+			}
+			if(validLocations.size() == 0) {
+				componentCombobox = new JComboBox<String>();
+				deleteButton = new JButton("Delete");
+				deleteButton.setEnabled(false);
+			}
+			
+			else {
+				locations = new String[validLocations.size()];
+				int i = 0;
+				for(String s: validLocations) {
+					if(s.equals("end0")) {}
+					else {
+						locations[i] = new String("Parallel Section " + s.substring(3));
+						++i;
+					}
+					
+				}
+				
+				componentCombobox = new JComboBox<String>(locations);
+				
+				deleteButton = new JButton("Delete");
+				deleteButton.addActionListener(new ActionListener () {
+				    public void actionPerformed(ActionEvent e) {
+				    	String section = (String) componentCombobox.getSelectedItem();
+				    	String num = section.substring(17);
+				    	circuit.removeParallelSection(num);
+				        cleanUp();
+				        
+				    }
+				});
+			}
 		}
 		
 		public void createGUI() {
@@ -47,5 +87,10 @@ public class DeleteParallelSectionWindow extends JFrame{
 			mainPanel.add(componentCombobox);
 			mainPanel.add(deleteButton);
 			add(mainPanel);
+		}
+		
+		private void cleanUp() {
+			circuit.windowEnableButtons();
+			this.dispose();
 		}
 }
