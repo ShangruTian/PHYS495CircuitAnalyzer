@@ -45,7 +45,7 @@ public class DeleteSingleComponentWindow extends JFrame{
 		
 
 		for(String s: circuit.getMap().keySet()) {
-			if(!s.startsWith("end") || !s.startsWith("start")) {
+			if(!s.startsWith("end") && !s.startsWith("start")) {
 				validLocations.addElement(s);
 			}	
 		}

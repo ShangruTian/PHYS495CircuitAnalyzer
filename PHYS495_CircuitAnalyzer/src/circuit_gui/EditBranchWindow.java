@@ -2,6 +2,7 @@ package circuit_gui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -15,6 +16,7 @@ import javax.swing.JTextField;
 import circuit_logic.Capacitor;
 import circuit_logic.Circuit;
 import circuit_logic.CircuitComponent;
+import circuit_logic.CircuitNode;
 import circuit_logic.Inductor;
 import circuit_logic.Resistor;
 public class EditBranchWindow extends JFrame{
@@ -33,6 +35,7 @@ public class EditBranchWindow extends JFrame{
 	private JLabel componentLabel;
 	private JLabel valueLabel;
 	private JLabel nameLabel;
+	private JLabel selectBranchLabel;
 	
 	private JTextArea viewSelectedBranch;
 	private JScrollPane sp;
@@ -55,13 +58,16 @@ public class EditBranchWindow extends JFrame{
 	private String[] inductorUnits;
 	private String[] components;
 	
+	private String[] locations;
+	
 	public EditBranchWindow(Circuit c) {
 		this.circuit = c;
-		setSize(720,200);
+		setSize(740,200);
 		setLocation(200,200);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		initializeComponents();
+		disableAll();
 		createGUI();
 		this.setVisible(true);
 	}
@@ -71,7 +77,7 @@ public class EditBranchWindow extends JFrame{
 		mainPanel.setLayout(new GridLayout(5,1));
 		
 		selectSectionPanel = new JPanel();
-		selectSectionPanel.setLayout(new GridLayout(1,4));
+		selectSectionPanel.setLayout(new GridLayout(1,5));
 		
 		displayBranchPanel = new JPanel();
 		displayBranchPanel.setLayout(new GridLayout(1,1));
@@ -88,6 +94,7 @@ public class EditBranchWindow extends JFrame{
 		labelOne = new JLabel("Delete a branch");
 		labelTwo = new JLabel("Add a branch with a new component",JLabel.CENTER);
 		selectLabel = new JLabel("Select a section");
+		selectBranchLabel = new JLabel("Select a branch");
 		componentLabel = new JLabel("Component");
 		valueLabel = new JLabel("Enter value:");
 		nameLabel = new JLabel("Enter name:");
@@ -95,8 +102,7 @@ public class EditBranchWindow extends JFrame{
 		valueTextfield = new JTextField();
 		nameTextfield = new JTextField();
 		
-		viewBranchCombobox = new JComboBox<Integer>();
-		locationCombobox = new JComboBox<String>();
+		viewBranchCombobox = new JComboBox<Integer>();		
 		deleteBranchCombobox = new JComboBox<Integer>();
 		components = new String[]{"Resistor","Capacitor","Inductor"};
 		componentCombobox = new JComboBox<String>(components);
@@ -138,11 +144,97 @@ public class EditBranchWindow extends JFrame{
 		viewSelectedBranch = new JTextArea();
 		viewSelectedBranch.setLineWrap(true);
 		sp = new JScrollPane(viewSelectedBranch,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		Vector<String> validLocations = new Vector<String>();
+		
+
+		for(String s: circuit.getMap().keySet()) {
+			if(s.startsWith("end") && !s.equals("end0")) {
+				validLocations.addElement(s);
+			}	
+		}
+		if(validLocations.size() == 0) {
+			locationCombobox = new JComboBox<String>();
+			disableAll();
+		}
+		
+		else {
+			locations = new String[validLocations.size() + 1];
+			locations[0] = new String("(Choose a section)");
+			int i = 1;
+			for(String s: validLocations) {
+				if(s.equals("end0")) {}
+				else {
+					locations[i] = new String("Parallel Section " + s.substring(3));
+					++i;
+				}
+				
+			}
+			locationCombobox = new JComboBox<String>(locations);
+		}
+
+		locationCombobox.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		        if(validLocations.size() == 0) {
+		        	
+		        }
+		        else if(((String)locationCombobox.getSelectedItem()).equals("(Choose a section)")) {
+		        	viewBranchCombobox.removeAllItems();
+		        	disableAll();
+		        }
+		        else {
+		        	viewBranchCombobox.removeAllItems();
+		        	String location = (String)locationCombobox.getSelectedItem();
+		        	String num = location.substring(17);
+		        	String name = new String("end" + num);
+		        	CircuitNode target = circuit.findNode(name).prev();
+		        	int size = target.getChildren().size();
+		        	for(int i = 0;i < size;++i) {
+		        		int index = i + 1;
+		        		viewBranchCombobox.addItem(index);
+		        	}
+		        	viewButton.setEnabled(true);
+		        }
+		    }
+		});
+		
+		viewButton.addActionListener(new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		    	String result = new String("");
+		    	String section = Integer.toString(locationCombobox.getSelectedIndex());
+		    	String num = section.substring(17);
+		    	int branch = (int)viewBranchCombobox.getSelectedItem();
+		        for(String s: circuit.viewBranch(num, branch)) {
+					result += s;
+					if(!s.equals("Branch End")) {result += " -> ";}
+		        }
+		        
+		        viewSelectedBranch.setText(result);
+		    }
+		});
+		
+	}
+	
+	private void disableAll() {
+		deleteButton.setEnabled(false);
+		addButton.setEnabled(false);
+		viewButton.setEnabled(false);
+		valueTextfield.setEnabled(false);
+		nameTextfield.setEnabled(false);
+	}
+	
+	private void enableAll() {
+		deleteButton.setEnabled(true);
+		addButton.setEnabled(true);
+		viewButton.setEnabled(true);
+		valueTextfield.setEnabled(true);
+		nameTextfield.setEnabled(true);
 	}
 	
 	public void createGUI() {
 		selectSectionPanel.add(selectLabel);
 		selectSectionPanel.add(locationCombobox);
+		selectSectionPanel.add(selectBranchLabel);
 		selectSectionPanel.add(viewBranchCombobox);
 		selectSectionPanel.add(viewButton);
 		mainPanel.add(selectSectionPanel);
@@ -218,4 +310,8 @@ public class EditBranchWindow extends JFrame{
 		}
 	}
 	
+	private void cleanUp() {
+		circuit.windowEnableButtons();
+		this.dispose();
+	}
 }

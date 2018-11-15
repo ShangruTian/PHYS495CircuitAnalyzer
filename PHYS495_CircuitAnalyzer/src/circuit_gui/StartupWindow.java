@@ -255,7 +255,7 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				new EditBranchWindow(null);
+				new EditBranchWindow(circuit);
 			}
 
 		});

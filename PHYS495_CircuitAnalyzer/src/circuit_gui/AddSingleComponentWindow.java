@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -128,23 +129,22 @@ public class AddSingleComponentWindow extends JFrame{
 		capacitorUnits = new String[] {"Farad","Mico Farad","Nano Farad"};
 		inductorUnits = new String[] {"Henry","Micro Henry","Nano Henry"};
 		
-		int sizeOfHashmap = circuit.getMap().size();
-		locations = new String[sizeOfHashmap-1];
-		int i = 0;
+		Vector<String> validLocations = new Vector<String>();
+		
+
 		for(String s: circuit.getMap().keySet()) {
-			if(s.equals("end0")) {}
-			else if(s.equals("start0")) {
-				locations[i] = new String("Circuit start");
-				++i;
+			if(!s.startsWith("end") && !s.startsWith("start")) {
+				validLocations.addElement(s);
 			}
-			else if(s.startsWith("end")) {
-				String temp = new String("Parallel Section " + s.substring(3));
-				locations[i] = temp;
+			if(s.equals("start0")) {
+				validLocations.addElement("Circuit start");
 			}
-			else {
+		}
+		locations = new String[validLocations.size()];
+		int i = 0;
+		for(String s: validLocations) {
 				locations[i] = s;
 				++i;
-			}
 			
 		}
 		
