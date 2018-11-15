@@ -302,7 +302,7 @@ public class Circuit {
 				curr = curr.next();
 			}
 		}
-		System.out.println("input: " + inputImpedance.getRealPart() + "  " + inputImpedance.getImaginaryPart());
+
 		inputImpedance.add(outputImpedance);
 		
 		if(inputImpedance.getRealPart() == 0) {
@@ -330,12 +330,13 @@ public class Circuit {
 				curr = curr.next();
 			}
 		}
-		if(inputImpedance.getImaginaryPart() > outputImpedance.getImaginaryPart()) {
-			return new String("Input leads output");
+		inputImpedance.add(outputImpedance);
+		if(inputImpedance.getImaginaryPart() > 0) {
+			return new String("Output leads input");
 		}
 		
-		else if(inputImpedance.getImaginaryPart() < outputImpedance.getImaginaryPart()) {
-			return new String("Output leads input");
+		else if(inputImpedance.getImaginaryPart() < 0) {
+			return new String("Input leads output");
 		}
 		
 		else return new String("Input in phase with output");
