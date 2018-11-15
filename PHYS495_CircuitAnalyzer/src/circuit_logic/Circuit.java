@@ -226,6 +226,7 @@ public class Circuit {
 			}
 			else {
 				CircuitMap.remove(start.getName());
+				start = start.next();
 			}
 		}
 		end.prev().removeBranch(toRemove);

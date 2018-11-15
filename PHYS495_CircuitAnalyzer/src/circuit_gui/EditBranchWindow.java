@@ -8,31 +8,38 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import circuit_logic.Capacitor;
 import circuit_logic.Circuit;
+import circuit_logic.CircuitComponent;
+import circuit_logic.Inductor;
+import circuit_logic.Resistor;
 public class EditBranchWindow extends JFrame{
 	private Circuit circuit;
 	
 	private JPanel mainPanel;
-	private JPanel panelForLabelOne;
-	private JPanel deleteSingleBranchPanel;
+	private JPanel selectSectionPanel;
+	private JPanel displayBranchPanel;
+	private JPanel deleteBranchPanel;
 	private JPanel panelForLabelTwo;
-	private JPanel selectParallelSectionPanel;
 	private JPanel addComponentPanel;
 	
 	private JLabel labelOne;
 	private JLabel labelTwo;
-	private JLabel selectDeleteLabel;
-	private JLabel selectBranchLabel;
-	private JLabel selectAddLabel;
+	private JLabel selectLabel;
 	private JLabel componentLabel;
 	private JLabel valueLabel;
 	private JLabel nameLabel;
 	
-	private JComboBox<String> deleteLocationCombobox;
+	private JTextArea viewSelectedBranch;
+	private JScrollPane sp;
+	
+	private JComboBox<String> locationCombobox;
+	private JComboBox<Integer> viewBranchCombobox;
 	private JComboBox<Integer> deleteBranchCombobox;
-	private JComboBox<String> addLocationCombobox;
 	private JComboBox<String> componentCombobox;
 	private JComboBox<String> unitCombobox;
 	
@@ -41,6 +48,7 @@ public class EditBranchWindow extends JFrame{
 	
 	private JButton deleteButton;
 	private JButton addButton;
+	private JButton viewButton;
 	
 	private String[] resistorUnits;
 	private String[] capacitorUnits;
@@ -49,7 +57,7 @@ public class EditBranchWindow extends JFrame{
 	
 	public EditBranchWindow(Circuit c) {
 		this.circuit = c;
-		setSize(720,250);
+		setSize(720,200);
 		setLocation(200,200);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
@@ -62,26 +70,24 @@ public class EditBranchWindow extends JFrame{
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(5,1));
 		
-		panelForLabelOne = new JPanel();
-		panelForLabelOne.setLayout(new GridLayout(1,1));
+		selectSectionPanel = new JPanel();
+		selectSectionPanel.setLayout(new GridLayout(1,4));
 		
-		deleteSingleBranchPanel = new JPanel();
-		deleteSingleBranchPanel.setLayout(new GridLayout(1,5));
+		displayBranchPanel = new JPanel();
+		displayBranchPanel.setLayout(new GridLayout(1,1));
 		
 		panelForLabelTwo = new JPanel();
 		panelForLabelTwo.setLayout(new GridLayout(1,1));
 		
-		selectParallelSectionPanel = new JPanel();
-		selectParallelSectionPanel.setLayout(new GridLayout(1,2));
+		deleteBranchPanel = new JPanel();
+		deleteBranchPanel.setLayout(new GridLayout(1,3));
 		
 		addComponentPanel = new JPanel();
 		addComponentPanel.setLayout(new GridLayout(1,8));
 		
-		labelOne = new JLabel("Delete a branch from selected section");
-		labelTwo = new JLabel("Add a branch to selected section");
-		selectDeleteLabel = new JLabel("Select a section");
-		selectBranchLabel = new JLabel("Select a branch");
-		selectAddLabel = new JLabel("Select a section");
+		labelOne = new JLabel("Delete a branch");
+		labelTwo = new JLabel("Add a branch with a new component",JLabel.CENTER);
+		selectLabel = new JLabel("Select a section");
 		componentLabel = new JLabel("Component");
 		valueLabel = new JLabel("Enter value:");
 		nameLabel = new JLabel("Enter name:");
@@ -89,9 +95,9 @@ public class EditBranchWindow extends JFrame{
 		valueTextfield = new JTextField();
 		nameTextfield = new JTextField();
 		
-		deleteLocationCombobox = new JComboBox<String>();
+		viewBranchCombobox = new JComboBox<Integer>();
+		locationCombobox = new JComboBox<String>();
 		deleteBranchCombobox = new JComboBox<Integer>();
-		addLocationCombobox = new JComboBox<String>();
 		components = new String[]{"Resistor","Capacitor","Inductor"};
 		componentCombobox = new JComboBox<String>(components);
 		componentCombobox.setSelectedItem("Resistor");
@@ -127,26 +133,32 @@ public class EditBranchWindow extends JFrame{
 		
 		deleteButton = new JButton("Delete");
 		addButton = new JButton("Add");
+		viewButton = new JButton("View");
 		
+		viewSelectedBranch = new JTextArea();
+		viewSelectedBranch.setLineWrap(true);
+		sp = new JScrollPane(viewSelectedBranch,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
 	
 	public void createGUI() {
-		panelForLabelOne.add(labelOne);
-		mainPanel.add(panelForLabelOne);
+		selectSectionPanel.add(selectLabel);
+		selectSectionPanel.add(locationCombobox);
+		selectSectionPanel.add(viewBranchCombobox);
+		selectSectionPanel.add(viewButton);
+		mainPanel.add(selectSectionPanel);
 		
-		deleteSingleBranchPanel.add(selectDeleteLabel);
-		deleteSingleBranchPanel.add(deleteLocationCombobox);
-		deleteSingleBranchPanel.add(selectBranchLabel);
-		deleteSingleBranchPanel.add(deleteBranchCombobox);
-		deleteSingleBranchPanel.add(deleteButton);
-		mainPanel.add(deleteSingleBranchPanel);
+		displayBranchPanel.add(sp);
+		mainPanel.add(displayBranchPanel);
+		
+		
+		
+		deleteBranchPanel.add(labelOne);
+		deleteBranchPanel.add(deleteBranchCombobox);
+		deleteBranchPanel.add(deleteButton);
+		mainPanel.add(deleteBranchPanel);
 		
 		panelForLabelTwo.add(labelTwo);
 		mainPanel.add(panelForLabelTwo);
-		
-		selectParallelSectionPanel.add(selectAddLabel);
-		selectParallelSectionPanel.add(addLocationCombobox);
-		mainPanel.add(selectParallelSectionPanel);
 		
 		addComponentPanel.add(componentLabel);
 		addComponentPanel.add(componentCombobox);
@@ -159,6 +171,51 @@ public class EditBranchWindow extends JFrame{
 		mainPanel.add(addComponentPanel);
 		
 		add(mainPanel);
+	}
+	
+	private CircuitComponent generateComponent() {
+		if(componentCombobox.getSelectedIndex() == 0) {
+			//a resistor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Resistor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if (unitCombobox.getSelectedIndex() == 1) {
+				return new Resistor(1000 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else {
+				return new Resistor(1000000 * Integer.parseInt(valueTextfield.getText()));
+			}
+		}
+		
+		else if(componentCombobox.getSelectedIndex() == 1) {
+			//a capacitor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Capacitor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if(unitCombobox.getSelectedIndex() == 1) {
+				return new Capacitor(0.001 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else {
+				return new Capacitor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+			}
+		}
+		
+		else {
+			//an inductor
+			if(unitCombobox.getSelectedIndex() == 0) {
+				return new Inductor(Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else if(unitCombobox.getSelectedIndex() == 1) {
+				return new Inductor(0.001 * Integer.parseInt(valueTextfield.getText()));
+			}
+			
+			else return new Inductor(0.000001 * Integer.parseInt(valueTextfield.getText()));
+		}
 	}
 	
 }
