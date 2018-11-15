@@ -121,7 +121,7 @@ public class StartupWindow extends JFrame{
 		anglePanel = new JPanel();
 		anglePanel.setLayout(new GridLayout(2,1));
 		
-		this.circuit = new Circuit();
+		
 		
 		frequencySlider.addChangeListener(new ChangeListener() {
 	        @Override
@@ -136,6 +136,32 @@ public class StartupWindow extends JFrame{
 	        	}
 	        }
 	    });
+		
+		this.circuit = new Circuit();
+		circuit.setWindow(this);
+	}
+	
+	public void reenableButtons() {
+		addSingleComponent.setEnabled(true);
+		deleteSingleComponent.setEnabled(true);
+		addParallelComponents.setEnabled(true);
+		deleteParallelComponents.setEnabled(true);
+		changeComponentButton.setEnabled(true);
+		viewCircuitButton.setEnabled(true);
+		editBranchButton.setEnabled(true);
+		calculateButton.setEnabled(true);
+		
+	}
+	
+	public void disableButtons() {
+		addSingleComponent.setEnabled(false);
+		deleteSingleComponent.setEnabled(false);
+		addParallelComponents.setEnabled(false);
+		deleteParallelComponents.setEnabled(false);
+		changeComponentButton.setEnabled(false);
+		viewCircuitButton.setEnabled(false);
+		editBranchButton.setEnabled(false);
+		calculateButton.setEnabled(false);
 	}
 	
 	private void createGUI() {
@@ -172,6 +198,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
+				disableButtons();
 				new AddSingleComponentWindow(circuit);
 			}
 
@@ -182,6 +209,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
+				disableButtons();
 				new DeleteSingleComponentWindow(circuit);
 			}
 
@@ -192,7 +220,8 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
-				new AddParallelSectionWindow(null);
+				disableButtons();
+				new AddParallelSectionWindow(circuit);
 			}
 
 		});
@@ -201,6 +230,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
+				disableButtons();
 				new DeleteParallelSectionWindow(null);
 			}
 
@@ -211,6 +241,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
+				disableButtons();
 				new ViewCircuitWindow(circuit);
 			}
 
@@ -221,6 +252,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
+				disableButtons();
 				new EditBranchWindow(null);
 			}
 
@@ -231,6 +263,7 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
+				disableButtons();
 				new ChangeComponentWindow(circuit);
 			}
 

@@ -2,6 +2,8 @@ package circuit_gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
@@ -26,6 +28,11 @@ public class DeleteSingleComponentWindow extends JFrame{
 		this.setResizable(false);
 		initializeComponents();
 		createGUI();
+		this.addWindowListener(new WindowAdapter() {
+			   public void windowClosing(WindowEvent evt) {
+				     cleanUp();
+				   }
+				  });
 		this.setVisible(true);
 	}
 	
@@ -65,6 +72,7 @@ public class DeleteSingleComponentWindow extends JFrame{
 	}
 	
 	private void cleanUp() {
+		circuit.windowEnableButtons();
 		this.dispose();
 	}
 }

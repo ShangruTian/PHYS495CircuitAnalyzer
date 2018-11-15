@@ -3,6 +3,8 @@ package circuit_logic;
 import java.util.HashMap;
 import java.util.Vector;
 
+import circuit_gui.StartupWindow;
+
 public class Circuit {
 	private CircuitNode start0;
 	private CircuitNode end0;
@@ -10,6 +12,7 @@ public class Circuit {
 	private CircuitNode outputStartingNode;
 	private static int JunctionNum;
 	private HashMap<String,CircuitNode> CircuitMap;
+	private StartupWindow sw;
 	public Circuit() {
 		JunctionNum = 0;
 		start0 = new CircuitNode(new JunctionStart(JunctionNum));
@@ -24,6 +27,14 @@ public class Circuit {
 		CircuitMap.put("end0", end0);
 		outputStartingNode = null;
 		JunctionNum ++;
+	}
+	
+	public void setWindow(StartupWindow s) {
+		this.sw = s;
+	}
+	
+	public void windowEnableButtons() {
+		sw.reenableButtons();
 	}
 	
 	public HashMap<String,CircuitNode> getMap(){
@@ -150,7 +161,9 @@ public class Circuit {
 		end.setName(endName);
 		end.setPrev(current);
 		end.setNext(current.next());
-		current.next().setPrev(end);
+		if(!current.next().getComponent().getType().equals("JunctionEnd")) {
+			current.next().setPrev(end);
+		}
 		current.setNext(end);
 		CircuitMap.put(endName, end);
 		Vector<CircuitNode> branches = new Vector<CircuitNode>();
@@ -162,6 +175,10 @@ public class Circuit {
 		}
 		current.addChildren(branches);
 		JunctionNum ++;
+	}
+	
+	public int getJunctionNum() {
+		return JunctionNum;
 	}
 	
 	public void addFirstNodeToBranch(String JunctionEndNum,int branch,String name,CircuitComponent c) {

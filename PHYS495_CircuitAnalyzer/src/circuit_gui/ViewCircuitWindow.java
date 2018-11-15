@@ -2,6 +2,8 @@ package circuit_gui;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -48,8 +50,15 @@ public class ViewCircuitWindow extends JFrame{
 		this.setResizable(false);
 		initializeComponents();
 		createGUI();
+		this.addWindowListener(new WindowAdapter() {
+			   public void windowClosing(WindowEvent evt) {
+				     cleanUp();
+				   }
+				  });
 		this.setVisible(true);
 	}
+	
+	
 	
 	public void initializeComponents() {
 		mainPanel = new JPanel();
@@ -85,7 +94,7 @@ public class ViewCircuitWindow extends JFrame{
 		allComponents = new JTextArea();
 		allComponents.setLineWrap(true);
 		for(String s: circuit.getMap().keySet()) {
-			if(s.equals("start0") || s.equals("end0")) {}
+			if(s.startsWith("end") ||s.startsWith("start")) {}
 			else {
 				CircuitComponent curr = circuit.getMap().get(s).getComponent();
 				allComponents.append(s + ": " + curr.getType() + ", " + curr.getValue() + "  ");
@@ -105,9 +114,13 @@ public class ViewCircuitWindow extends JFrame{
 		        
 		    }
 		});
+		if(circuit.getMap().size() == 2) {
+			setOutputButton.setEnabled(false);
+		}
 	}
 	
 	private void cleanUp() {
+		circuit.windowEnableButtons();
 		this.dispose();
 	}
 	

@@ -2,6 +2,8 @@ package circuit_gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -45,6 +47,11 @@ public class AddSingleComponentWindow extends JFrame{
 		this.setResizable(false);
 		initializeComponents();
 		createGUI();
+		this.addWindowListener(new WindowAdapter() {
+			   public void windowClosing(WindowEvent evt) {
+				     cleanUp();
+				   }
+				  });
 		this.setVisible(true);
 	}
 	
@@ -219,6 +226,7 @@ public class AddSingleComponentWindow extends JFrame{
 	}
 	
 	private void cleanUp() {
+		circuit.windowEnableButtons();
 		this.dispose();
 	}
 	
