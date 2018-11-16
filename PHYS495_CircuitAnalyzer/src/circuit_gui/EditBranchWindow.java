@@ -72,7 +72,7 @@ public class EditBranchWindow extends JFrame{
 	
 	public EditBranchWindow(Circuit c) {
 		this.circuit = c;
-		setSize(740,200);
+		setSize(790,200);
 		setLocation(200,200);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);

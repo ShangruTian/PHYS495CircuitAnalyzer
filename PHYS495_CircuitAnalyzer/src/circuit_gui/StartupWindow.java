@@ -19,9 +19,15 @@ public class StartupWindow extends JFrame{
 	private JSlider frequencySlider;
 	
 	private JLabel frequencyLabel;
-	private JLabel impedanceLabel;
-	private JLabel angleLabel;
-	private JLabel leadLabel;
+	private JTextArea realImpedanceLabel;
+	private JTextArea imaginaryImpedanceLabel;
+	private JTextArea angleLabel;
+	private JTextArea leadLabel;
+	
+	private JScrollPane sp1;
+	private JScrollPane sp2;
+	private JScrollPane sp3;
+	private JScrollPane sp4;
 	
 	private JButton addSingleComponent;
 	private JButton deleteSingleComponent;
@@ -37,6 +43,7 @@ public class StartupWindow extends JFrame{
 	private JPanel sliderPanel;
 	private JPanel displayPanel;
 	private JPanel anglePanel;
+	private JPanel impedancePanel;;
 	
 	private Circuit circuit;
 	
@@ -58,7 +65,7 @@ public class StartupWindow extends JFrame{
 	
 	public StartupWindow() {
 		super("PHYS 495 Circuit Analyzer");
-		setSize(720,540);
+		setSize(900,450);
 		setLocation(100,100);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
@@ -100,9 +107,22 @@ public class StartupWindow extends JFrame{
 		//currNodeLabel = new JLabel("Current node:");
 		
 		
-		impedanceLabel = new JLabel("Impedance:",JLabel.CENTER);
-		angleLabel = new JLabel("Phase Angle:",JLabel.CENTER);
-		leadLabel = new JLabel("Lead:",JLabel.CENTER);
+		realImpedanceLabel = new JTextArea("Real impedance:");
+		realImpedanceLabel.setLineWrap(true);
+		realImpedanceLabel.setEditable(false);
+		sp1 = new JScrollPane(realImpedanceLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		imaginaryImpedanceLabel = new JTextArea("Imaginary impedance:");
+		imaginaryImpedanceLabel.setLineWrap(true);
+		imaginaryImpedanceLabel.setEditable(false);
+		sp2 = new JScrollPane(imaginaryImpedanceLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		angleLabel = new JTextArea("Phase Angle:");
+		angleLabel.setLineWrap(true);
+		angleLabel.setEditable(false);
+		sp3 = new JScrollPane(angleLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		leadLabel = new JTextArea("Lead:");
+		leadLabel.setLineWrap(true);
+		leadLabel.setEditable(false);
+		sp4 = new JScrollPane(leadLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(3,1));
@@ -119,6 +139,9 @@ public class StartupWindow extends JFrame{
 		anglePanel = new JPanel();
 		anglePanel.setLayout(new GridLayout(2,1));
 		
+		impedancePanel = new JPanel();
+		impedancePanel .setLayout(new GridLayout(2,1));
+		
 		
 		
 		frequencySlider.addChangeListener(new ChangeListener() {
@@ -130,7 +153,8 @@ public class StartupWindow extends JFrame{
 	        		JSlider js = (JSlider)ce.getSource();
 	        		double frequency = (double)js.getValue();
 	        		ComplexNumber imp =circuit.calculateTotalImpedance(frequency);	
-	        		impedanceLabel.setText("Impedance: "+ (float)imp.getRealPart() + "+" + (float)imp.getImaginaryPart() + "j");
+	        		realImpedanceLabel.setText("Real impedance: " + imp.getRealPart());
+	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + imp.getImaginaryPart());
 	        		double ang = circuit.calculatePhaseAngle(frequency);
 	        		angleLabel.setText("Phase angle(degree): " + (float)ang * 57.2958);
 	        		leadLabel.setText(circuit.findLeadingVector(frequency));
@@ -181,12 +205,15 @@ public class StartupWindow extends JFrame{
 		sliderPanel.add(frequencySlider);
 		mainPanel.add(sliderPanel);
 		
+		impedancePanel.add(sp1);
+		impedancePanel.add(sp2);
+		
 		displayPanel.add(changeComponentButton);
 		displayPanel.add(calculateButton);
-		displayPanel.add(impedanceLabel);
+		displayPanel.add(impedancePanel);
 		
-		anglePanel.add(leadLabel);
-		anglePanel.add(angleLabel);
+		anglePanel.add(sp4);
+		anglePanel.add(sp3);
 		displayPanel.add(anglePanel);
 		
 		mainPanel.add(displayPanel);
@@ -202,7 +229,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				impedanceLabel.setText("Impedance: ");
+				realImpedanceLabel.setText("Real impedance: ");
+				imaginaryImpedanceLabel.setText("Imaginary impedance");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new AddSingleComponentWindow(circuit);
@@ -216,7 +244,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				impedanceLabel.setText("Impedance: ");
+				realImpedanceLabel.setText("Real impedance: ");
+				imaginaryImpedanceLabel.setText("Imaginary impedance");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new DeleteSingleComponentWindow(circuit);
@@ -230,7 +259,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				impedanceLabel.setText("Impedance: ");
+				realImpedanceLabel.setText("Real impedance: ");
+				imaginaryImpedanceLabel.setText("Imaginary impedance:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new AddParallelSectionWindow(circuit);
@@ -243,7 +273,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				impedanceLabel.setText("Impedance: ");
+				realImpedanceLabel.setText("Real impedance: ");
+				imaginaryImpedanceLabel.setText("Imaginary impedance:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new DeleteParallelSectionWindow(circuit);
@@ -257,7 +288,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				impedanceLabel.setText("Impedance: ");
+				realImpedanceLabel.setText("Real impedance: ");
+				imaginaryImpedanceLabel.setText("Imaginary impedance:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new ViewCircuitWindow(circuit);
@@ -271,7 +303,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				impedanceLabel.setText("Impedance: ");
+				realImpedanceLabel.setText("Real impedance: ");
+				imaginaryImpedanceLabel.setText("Imaginary impedance:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new EditBranchWindow(circuit);
@@ -285,7 +318,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				impedanceLabel.setText("Impedance: ");
+				realImpedanceLabel.setText("Real impedance: ");
+				imaginaryImpedanceLabel.setText("Imaginary impedance:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new ChangeComponentWindow(circuit);
@@ -298,14 +332,16 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(!circuit.hasOutput()) {
-					impedanceLabel.setText("Impedance:(no output)");
+					realImpedanceLabel.setText("Real impedance:(no input) ");
+					imaginaryImpedanceLabel.setText("Imaginary impedance:(no input)");
 					angleLabel.setText("Phase angle:(no output)");
 					leadLabel.setText("Lead:(no output)");
 				}
 				else {
 					canCalculate = true;
 					ComplexNumber imp =circuit.calculateTotalImpedance(frequencySlider.getValue());	
-	        		impedanceLabel.setText("Impedance: "+ (float)imp.getRealPart() + "+" + (float)imp.getImaginaryPart() + "j");
+					realImpedanceLabel.setText("Real impedance: " + imp.getRealPart());
+	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + imp.getImaginaryPart());
 	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
 	        		angleLabel.setText("Phase angle(degree): " + (float)ang * 57.2958);
 	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));

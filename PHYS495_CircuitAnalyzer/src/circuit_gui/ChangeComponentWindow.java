@@ -48,7 +48,7 @@ private static final long serialVersionUID = 1;
 	
 	public ChangeComponentWindow(Circuit c) {
 		this.circuit = c;
-		setSize(650,100);
+		setSize(790,100);
 		setLocation(200,200);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);

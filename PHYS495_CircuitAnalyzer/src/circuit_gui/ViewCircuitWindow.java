@@ -81,6 +81,7 @@ public class ViewCircuitWindow extends JFrame{
 		
 		circuitLabel = new JTextArea();
 		circuitLabel.setLineWrap(false);
+		circuitLabel.setEditable(false);
 		String result = new String("");
 		for(String s:circuit.viewCircuit()) {
 			if(!s.equals("Circuit Start") && !s.equals("Circuit End") && !s.equals("(Output terminal)")) {
@@ -94,6 +95,7 @@ public class ViewCircuitWindow extends JFrame{
 		
 		allComponents = new JTextArea();
 		allComponents.setLineWrap(true);
+		allComponents.setEditable(false);
 		for(String s: circuit.getMap().keySet()) {
 			if(s.startsWith("end") ||s.startsWith("start")) {}
 			else {

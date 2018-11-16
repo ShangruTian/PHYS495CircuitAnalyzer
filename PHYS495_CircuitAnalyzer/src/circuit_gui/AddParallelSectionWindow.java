@@ -69,7 +69,7 @@ public class AddParallelSectionWindow extends JFrame{
 	
 	public AddParallelSectionWindow(Circuit c) {
 		this.circuit = c;
-		setSize(720,250);
+		setSize(790,250);
 		setLocation(200,200);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
