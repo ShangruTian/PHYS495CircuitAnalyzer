@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
+import java.util.Vector;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -38,6 +40,8 @@ private static final long serialVersionUID = 1;
 	private String[] capacitorUnits;
 	private String[] inductorUnits;
 	private String[] components;
+	
+	private String[] locations;
 	
 	private JButton changeButton;
 	private Circuit circuit;
@@ -89,17 +93,25 @@ private static final long serialVersionUID = 1;
 		
 		unitCombobox = new JComboBox<String>(resistorUnits);
 		unitCombobox.setSelectedItem("Ohms");
-		int sizeOfHashmap = circuit.getMap().size();
-		String[] locations = new String[sizeOfHashmap-2];
-		int i = 0;
+		Vector<String> validLocations = new Vector<String>();
+		
+
 		for(String s: circuit.getMap().keySet()) {
-			if(s.startsWith("end") || s.startsWith("start")) {}
-			else {
+			if(!s.startsWith("start") && !s.startsWith("end")) {
+				validLocations.addElement(s);
+			}	
+		}
+		locations = new String[validLocations.size()];
+		int i = 0;
+		for(String s: validLocations) {
+			
+			
 				locations[i] = s;
 				++i;
-			}
+
+			
 		}
-		locationCombobox = new JComboBox<String>(locations);
+		Arrays.sort(locations);
 		
 		
 		changeButton = new JButton("Change");

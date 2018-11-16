@@ -183,8 +183,10 @@ public class AddParallelSectionWindow extends JFrame{
 		branchTextfield.getDocument().addDocumentListener(new createBranch());
 		nameTextfield = new JTextField();
 		nameTextfield.getDocument().addDocumentListener(new canCreate());
+		nameTextfield.setEnabled(false);
 		valueTextfield = new JTextField();
 		valueTextfield.getDocument().addDocumentListener(new canCreate());
+		valueTextfield.setEnabled(false);
 		
 		createBranchButton = new JButton("Create");
 		createBranchButton.addActionListener(new ActionListener () {
@@ -210,6 +212,8 @@ public class AddParallelSectionWindow extends JFrame{
 		        addComponentButton.setEnabled(false);
 		        createBranchButton.setEnabled(false);
 		        branchTextfield.setEnabled(false);
+		        nameTextfield.setEnabled(true);
+		        valueTextfield.setEnabled(true);
 		    }
 		});
 		createBranchButton.setEnabled(false);
