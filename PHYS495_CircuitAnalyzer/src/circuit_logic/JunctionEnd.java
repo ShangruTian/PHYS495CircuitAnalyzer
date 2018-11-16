@@ -16,8 +16,10 @@ public class JunctionEnd extends CircuitComponent{
 	}
 	
 	public void updateImpedance(ComplexNumber c) {
-		numerator.multiply(c);
-		denominator.add(c);
+		ComplexNumber one = new ComplexNumber(1,0);
+		one.divide(c);
+		denominator.add(one);
+		
 	}
 
 	public ComplexNumber calculateImpedance(double frequency) {
