@@ -113,7 +113,7 @@ private static final long serialVersionUID = 1;
 		}
 		Arrays.sort(locations);
 		
-		
+		locationCombobox = new JComboBox<String>(locations);
 		changeButton = new JButton("Change");
 		changeButton.setEnabled(false);
 		changeButton.addActionListener(new ActionListener () {
