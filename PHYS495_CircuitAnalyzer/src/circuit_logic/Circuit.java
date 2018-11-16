@@ -212,6 +212,12 @@ public class Circuit {
 			}
 		}
 		prev.removeChildren();
+		if(end.isBranchStart()) {
+			prev.addChildren(end.getChildren());
+			for(CircuitNode c: prev.getChildren()) {
+				c.setPrev(prev);
+			}
+		}
 		CircuitMap.remove("end" + JunctionEndNum);
 	}
 	
