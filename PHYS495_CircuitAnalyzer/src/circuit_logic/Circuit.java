@@ -195,31 +195,43 @@ public class Circuit {
 		CircuitNode prev = end.prev();
 		CircuitNode next = end.next();
 		prev.setNext(next);
-		if(!next.getComponent().getType().equals("JunctionEnd")) {
+		if(next.getComponent().getType().equals("JunctionEnd")) {
+			double identification = next.getComponent().getValue();
+			CircuitNode temp = end;
+			while(!temp.getComponent().getType().equals("JunctionStart")) {
+				temp = temp.prev();
+			}
+			if(temp.getComponent().getValue() != identification) {
+				next.setPrev(prev);
+			}
+		}
+		else {
 			next.setPrev(prev);
 		}
 		Vector<CircuitNode> children = prev.getChildren();
+		for(int i = 0;i < children.size();++i) {
+			CircuitNode start = children.get(i);
+			start = start.next();
+			while(start != end) {
+				if(start.getComponent().getType().equals("JunctionEnd")) {
+					String num = start.getName().substring(3);
+					start = start.next();
+					removeParallelSection(num);
+				}
+				else {
+					String name = start.getName();
+					start = start.next();
+					deleteSingleNode(name);
+				}
+			}
+		}
+		prev.removeChildren();
 		if(end.isBranchStart()) {
 			prev.addChildren(end.getChildren());
 			for(CircuitNode c: prev.getChildren()) {
 				c.setPrev(prev);
 			}
 		}
-		for(int i = 0;i < children.size();++i) {
-			CircuitNode start = children.get(i);
-			start = start.next();
-			while(start != end) {
-				if(start.getComponent().getType().equals("JunctionEnd")) {
-					removeParallelSection(Integer.toString((int)start.getComponent().getValue()));
-					start = start.next();
-				}
-				else {
-					CircuitMap.remove(start.getName());
-					start = start.next();
-				}
-			}
-		}
-		prev.removeChildren();
 		CircuitMap.remove("end" + JunctionEndNum);
 	}
 	
