@@ -5,7 +5,7 @@ public class Capacitor extends CircuitComponent{
 		super("Capacitor",value);
 	}
 	public ComplexNumber calculateImpedance(double frequency) {
-		if(frequency == 0) return new ComplexNumber(0,Integer.MAX_VALUE);
+		if(frequency == 0) return new ComplexNumber(0,Integer.MIN_VALUE);
 		return new ComplexNumber(0,(-1/(frequency * value)));
 	}
 }

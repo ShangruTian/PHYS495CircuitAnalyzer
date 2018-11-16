@@ -29,6 +29,20 @@ public class Circuit {
 		JunctionNum ++;
 	}
 	
+	private boolean pureCapacitive() {
+		boolean res = true;
+		for(String s: CircuitMap.keySet()) {
+			CircuitComponent component = CircuitMap.get(s).getComponent();
+			if(component.getType().equals("JunctionEnd")||component.getType().equals("JunctionStart")) {
+				
+			}
+			else if(!component.getType().equals("Capacitor")) {
+				res = false;
+			}
+		}
+		return res;
+	}
+	
 	public void setWindow(StartupWindow s) {
 		this.sw = s;
 	}
@@ -294,20 +308,25 @@ public class Circuit {
 	}
 	
 	public ComplexNumber calculateTotalImpedance(double frequency) {
-		ComplexNumber ans = new ComplexNumber(0,0);
-		CircuitNode curr = outputStartingNode;
-		while(curr != end0) {
-			if(curr.getComponent().getType().equals("JunctionEnd")) {
-				ans.add(calculateParallelImpedance(curr,frequency));
-				curr = curr.next();
-			}
-			else {
-				ans.add(curr.getComponent().calculateImpedance(frequency));
-				curr = curr.next();
-			}
+		if(pureCapacitive() && frequency == 0) {
+			return new ComplexNumber(0,Integer.MIN_VALUE);
 		}
-		
-		return ans;
+		else {
+			ComplexNumber ans = new ComplexNumber(0,0);
+			CircuitNode curr = outputStartingNode;
+			while(curr != end0) {
+				if(curr.getComponent().getType().equals("JunctionEnd")) {
+					ans.add(calculateParallelImpedance(curr,frequency));
+					curr = curr.next();
+				}
+				else {
+					ans.add(curr.getComponent().calculateImpedance(frequency));
+					curr = curr.next();
+				}
+			}
+			
+			return ans;
+		}
 	}
 	
 	public double calculatePhaseAngle(double frequency){
@@ -328,7 +347,10 @@ public class Circuit {
 		inputImpedance.add(outputImpedance);
 		
 		if(inputImpedance.getRealPart() == 0) {
-			return Math.atan(Integer.MAX_VALUE);
+			if(inputImpedance.getImaginaryPart() > 0) {
+				return 1.57079576513;
+			}
+			else return -1.57079576513;
 		}
 		
 		else return Math.atan(inputImpedance.getImaginaryPart()/inputImpedance.getRealPart());

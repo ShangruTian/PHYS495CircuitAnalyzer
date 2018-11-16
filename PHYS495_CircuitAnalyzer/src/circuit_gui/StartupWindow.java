@@ -49,7 +49,7 @@ public class StartupWindow extends JFrame{
 	
 	private boolean canCalculate;
 	
-	static final int MIN_FREQ = 0;
+	static final int MIN_FREQ = 1;
 	static final int MAX_FREQ = 100000;
 	static final int DEFAULT_FREQ = 10000;
 	
