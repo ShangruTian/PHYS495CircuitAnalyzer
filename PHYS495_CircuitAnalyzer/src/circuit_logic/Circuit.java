@@ -195,8 +195,16 @@ public class Circuit {
 		CircuitNode prev = end.prev();
 		CircuitNode next = end.next();
 		prev.setNext(next);
-		next.setPrev(prev);
+		if(!next.getComponent().getType().equals("JunctionEnd")) {
+			next.setPrev(prev);
+		}
 		Vector<CircuitNode> children = prev.getChildren();
+		if(end.isBranchStart()) {
+			prev.addChildren(end.getChildren());
+			for(CircuitNode c: prev.getChildren()) {
+				c.setPrev(prev);
+			}
+		}
 		for(int i = 0;i < children.size();++i) {
 			CircuitNode start = children.get(i);
 			start = start.next();
@@ -212,12 +220,6 @@ public class Circuit {
 			}
 		}
 		prev.removeChildren();
-		if(end.isBranchStart()) {
-			prev.addChildren(end.getChildren());
-			for(CircuitNode c: prev.getChildren()) {
-				c.setPrev(prev);
-			}
-		}
 		CircuitMap.remove("end" + JunctionEndNum);
 	}
 	
@@ -227,13 +229,15 @@ public class Circuit {
 		start = start.next();
 		while(start != end) {
 			if(start.getComponent().getType().equals("JunctionEnd")) {
-				removeParallelSection(Double.toString(start.getComponent().getValue()));
+				String num = start.getName().substring(3);
 				start = start.next();
+				removeParallelSection(num);
 			}
 			else {
-				CircuitMap.remove(start.getName());
+				String name = start.getName();
 				start = start.next();
-			}
+				deleteSingleNode(name);
+			} 
 		}
 		end.prev().removeBranch(toRemove);
 	}
