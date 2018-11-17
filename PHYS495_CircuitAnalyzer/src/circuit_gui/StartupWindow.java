@@ -100,7 +100,7 @@ public class StartupWindow extends JFrame{
 		changeComponentButton = new JButton("Change a component");
 		viewCircuitButton = new JButton("View entire circuit");
 		editBranchButton = new JButton("View/Edit parallel section");
-		calculateButton = new JButton("Calculate impedance");
+		calculateButton = new JButton("Plot admittance vs frequency");
 		
 		frequencyLabel = new JLabel("Frequency: "+ frequencySlider.getValue() + "Hz",JLabel.CENTER);
 		//voltageLabel = new JLabel("Peak to peak voltage: 5V",JLabel.CENTER);
@@ -345,6 +345,8 @@ public class StartupWindow extends JFrame{
 	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
 	        		angleLabel.setText("Phase angle(degree): " + (float)ang * 57.2958);
 	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));
+	        		lineChartFrame lcf = circuit.createPlot(frequencySlider.getValue());
+	        		lcf.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				}
 			}
 

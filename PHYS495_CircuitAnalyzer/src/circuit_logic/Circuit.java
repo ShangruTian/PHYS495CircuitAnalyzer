@@ -3,7 +3,21 @@ package circuit_logic;
 import java.util.HashMap;
 import java.util.Vector;
 
+import javax.swing.JFrame;
+
 import circuit_gui.StartupWindow;
+import circuit_gui.lineChartFrame;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartFrame;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
 
 public class Circuit {
 	private CircuitNode start0;
@@ -27,6 +41,37 @@ public class Circuit {
 		CircuitMap.put("end0", end0);
 		outputStartingNode = null;
 		JunctionNum ++;
+	}
+	
+
+	
+	public lineChartFrame createPlot(int maxFrequency) {
+		double[] freq = new double[maxFrequency];
+		for(int i = 0;i < maxFrequency;++i) {
+			double temp = i + 1;
+			freq[i] = temp;
+		}
+		double[] admittance = new double[maxFrequency];
+		for(int j = 0;j < maxFrequency;++j) {
+			ComplexNumber imp = calculateTotalImpedance(freq[j]);
+			double a = imp.getRealPart();
+			double b = imp.getImaginaryPart();
+			admittance[j] = 1/(Math.sqrt(a*a + b*b));
+		}
+		XYSeries series = new XYSeries("Frequency vs. Admittance");
+		for(int k = 0;k < maxFrequency;++k) {
+			series.add(freq[k],admittance[k]);
+		}
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		dataset.addSeries(series);
+		JFreeChart chart = ChartFactory.createXYLineChart("Frequency vs. Admittance", "Frequency", "Admittance", dataset,PlotOrientation.VERTICAL,true,true,false);
+		ChartPanel cp = new ChartPanel(chart);
+		lineChartFrame lcf = new lineChartFrame("Frequency vs. Admittance");
+		lcf.scp(cp);
+		lcf.pack();
+		RefineryUtilities.centerFrameOnScreen(lcf);
+		lcf.setVisible(true);
+		return lcf;
 	}
 	
 	private boolean pureCapacitive() {

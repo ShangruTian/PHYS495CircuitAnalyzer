@@ -77,15 +77,15 @@ public class AddSingleComponentWindow extends JFrame{
 		else if(componentCombobox.getSelectedIndex() == 1) {
 			//a capacitor
 			if(unitCombobox.getSelectedIndex() == 0) {
-				return new Capacitor(Double.parseDouble(valueTextfield.getText()));
-			}
-			
-			else if(unitCombobox.getSelectedIndex() == 1) {
 				return new Capacitor(0.001 * Double.parseDouble(valueTextfield.getText()));
 			}
 			
-			else {
+			else if(unitCombobox.getSelectedIndex() == 1) {
 				return new Capacitor(0.000001 * Double.parseDouble(valueTextfield.getText()));
+			}
+			
+			else {
+				return new Capacitor(0.000000000001 * Double.parseDouble(valueTextfield.getText()));
 			}
 		}
 		
@@ -127,9 +127,9 @@ public class AddSingleComponentWindow extends JFrame{
 		componentCombobox = new JComboBox<String>(components);
 		componentCombobox.setSelectedItem("Resistor");
 		
-		resistorUnits = new String[] {"Ohms","Kilo Ohms","Mega Ohms"};
-		capacitorUnits = new String[] {"Farad","Mico Farad","Nano Farad"};
-		inductorUnits = new String[] {"Henry","Micro Henry","Nano Henry"};
+		resistorUnits = new String[] {"Ohms","Kiloohms","Megaohms"};
+		capacitorUnits = new String[] {"Millifarad","Microfarad","Picofarad"};
+		inductorUnits = new String[] {"Henry","Microhenry","Milihenry"};
 		
 		Vector<String> validLocations = new Vector<String>();
 		
