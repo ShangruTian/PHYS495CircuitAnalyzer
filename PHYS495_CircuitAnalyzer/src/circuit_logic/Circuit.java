@@ -3,20 +3,16 @@ package circuit_logic;
 import java.util.HashMap;
 import java.util.Vector;
 
-import javax.swing.JFrame;
 
 import circuit_gui.StartupWindow;
 import circuit_gui.lineChartFrame;
 
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 public class Circuit {
@@ -58,15 +54,15 @@ public class Circuit {
 			double b = imp.getImaginaryPart();
 			admittance[j] = 1/(Math.sqrt(a*a + b*b));
 		}
-		XYSeries series = new XYSeries("Frequency vs. Admittance");
+		XYSeries series = new XYSeries("Admittance vs. Frequency");
 		for(int k = 0;k < maxFrequency;++k) {
 			series.add(freq[k],admittance[k]);
 		}
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(series);
-		JFreeChart chart = ChartFactory.createXYLineChart("Frequency vs. Admittance", "Frequency", "Admittance", dataset,PlotOrientation.VERTICAL,true,true,false);
+		JFreeChart chart = ChartFactory.createXYLineChart("Admittance vs. Frequency", "Frequency", "Admittance", dataset,PlotOrientation.VERTICAL,true,true,false);
 		ChartPanel cp = new ChartPanel(chart);
-		lineChartFrame lcf = new lineChartFrame("Frequency vs. Admittance");
+		lineChartFrame lcf = new lineChartFrame("Admittance vs. Frequency");
 		lcf.scp(cp);
 		lcf.pack();
 		RefineryUtilities.centerFrameOnScreen(lcf);
