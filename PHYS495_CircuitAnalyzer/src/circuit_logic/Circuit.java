@@ -426,6 +426,7 @@ public class Circuit {
 			if(inputImpedance.getImaginaryPart() > 0) {
 				return 1.57079576513;
 			}
+			else if(inputImpedance.getImaginaryPart() == 0) return 0;
 			else return -1.57079576513;
 		}
 		
