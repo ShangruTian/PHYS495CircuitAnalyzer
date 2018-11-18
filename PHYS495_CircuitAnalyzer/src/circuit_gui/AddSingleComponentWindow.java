@@ -113,10 +113,10 @@ public class AddSingleComponentWindow extends JFrame{
 		newComponentPanel = new JPanel();
 		newComponentPanel.setLayout(new GridLayout(1,8));
 		
-		enterValueLabel = new JLabel("Enter value:");
-		enterNameLabel = new JLabel("Enter name:");
-		selectLocationLabel = new JLabel("Select the location to insert after:");
-		selectComponentLabel = new JLabel("Component");
+		enterValueLabel = new JLabel("Enter value:",JLabel.CENTER);
+		enterNameLabel = new JLabel("Enter name:",JLabel.CENTER);
+		selectLocationLabel = new JLabel("Select the location to insert after:",JLabel.CENTER);
+		selectComponentLabel = new JLabel("Component",JLabel.CENTER);
 		
 		valueTextfield = new JTextField();
 		valueTextfield.getDocument().addDocumentListener(new canCreate());

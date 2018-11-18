@@ -106,13 +106,13 @@ public class AddParallelSectionWindow extends JFrame{
 		finalPanel = new JPanel();
 		finalPanel.setLayout(new GridLayout(1,2));
 		
-		locationLabel = new JLabel("Location to insert after");
-		numOfBranchLabel = new JLabel("# of branches");
-		selectBranchLabel = new JLabel("Select a branch");
-		selectComponentLabel = new JLabel("Component");
-		enterNameLabel = new JLabel("Enter name:");
-		enterValueLabel = new JLabel("Enter value:");
-		statusLabel = new JLabel("Status: branches not created");
+		locationLabel = new JLabel("Location to insert after",JLabel.CENTER);
+		numOfBranchLabel = new JLabel("# of branches",JLabel.RIGHT);
+		selectBranchLabel = new JLabel("Select a branch",JLabel.CENTER);
+		selectComponentLabel = new JLabel("Component",JLabel.CENTER);
+		enterNameLabel = new JLabel("Enter name:",JLabel.CENTER);
+		enterValueLabel = new JLabel("Enter value:",JLabel.CENTER);
+		statusLabel = new JLabel("Status: branches not created",JLabel.CENTER);
 		
 		
 		components = new String[]{"Resistor","Capacitor","Inductor"};

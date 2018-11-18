@@ -2,6 +2,8 @@ package circuit_gui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -43,7 +45,8 @@ public class StartupWindow extends JFrame{
 	private JPanel sliderPanel;
 	private JPanel displayPanel;
 	private JPanel anglePanel;
-	private JPanel impedancePanel;;
+	private JPanel impedancePanel;
+	private NumberFormat formatter;
 	
 	private Circuit circuit;
 	
@@ -78,6 +81,8 @@ public class StartupWindow extends JFrame{
 	}
 	
 	private void initComponents() {
+		
+		formatter = new DecimalFormat("0.##E0");
 		//voltageSlider = new JSlider(JSlider.HORIZONTAL,MIN_VOLTAGE,MAX_VOLTAGE,DEFAULT_VOLTAGE);
 		frequencySlider = new JSlider(JSlider.HORIZONTAL,MIN_FREQ,MAX_FREQ,DEFAULT_FREQ);
 		//voltageSlider.setMinorTickSpacing(10);
@@ -103,7 +108,7 @@ public class StartupWindow extends JFrame{
 		editBranchButton = new JButton("View/Edit parallel section");
 		calculateButton = new JButton("Plot admittance vs frequency");
 		
-		frequencyLabel = new JLabel("Frequency: "+ frequencySlider.getValue() + "Hz",JLabel.CENTER);
+		frequencyLabel = new JLabel("Max frequency on plot: "+ frequencySlider.getValue() + "Hz",JLabel.CENTER);
 		//voltageLabel = new JLabel("Peak to peak voltage: 5V",JLabel.CENTER);
 		//currNodeLabel = new JLabel("Current node:");
 		
@@ -148,16 +153,16 @@ public class StartupWindow extends JFrame{
 		frequencySlider.addChangeListener(new ChangeListener() {
 	        @Override
 	        public void stateChanged(ChangeEvent ce) {
-	        	frequencyLabel.setText("Frequency: "+ frequencySlider.getValue() + "Hz");
+	        	frequencyLabel.setText("Max frequency on plot: "+ frequencySlider.getValue() + "Hz");
 	        	if(canCalculate) {
 	        		canCalculate = false;
 	        		JSlider js = (JSlider)ce.getSource();
 	        		double frequency = (double)js.getValue();
 	        		ComplexNumber imp =circuit.calculateTotalImpedance(frequency);	
-	        		realImpedanceLabel.setText("Real impedance: " + imp.getRealPart());
-	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + imp.getImaginaryPart());
-	        		double ang = circuit.calculatePhaseAngle(frequency);
-	        		angleLabel.setText("Phase angle(degree): " + (float)ang * 57.2958);
+	        		realImpedanceLabel.setText("Real impedance: " + formatter.format(imp.getRealPart()));
+	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + formatter.format(imp.getImaginaryPart()));
+	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
+	        		angleLabel.setText("Phase angle(degree): " + formatter.format((float)ang * 57.2958));
 	        		leadLabel.setText(circuit.findLeadingVector(frequency));
 	        		canCalculate = true;
 	        		//System.out.println("output: " + imp.getRealPart() + " " + imp.getImaginaryPart());
@@ -343,11 +348,12 @@ public class StartupWindow extends JFrame{
 				}
 				else {
 					canCalculate = true;
-					ComplexNumber imp =circuit.calculateTotalImpedance(frequencySlider.getValue());	
-					realImpedanceLabel.setText("Real impedance: " + imp.getRealPart());
-	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + imp.getImaginaryPart());
+					ComplexNumber imp =circuit.calculateTotalImpedance(frequencySlider.getValue());
+					System.out.println(imp == null);
+					realImpedanceLabel.setText("Real impedance: " + formatter.format(imp.getRealPart()));
+	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + formatter.format(imp.getImaginaryPart()));
 	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
-	        		angleLabel.setText("Phase angle(degree): " + (float)ang * 57.2958);
+	        		angleLabel.setText("Phase angle(degree): " + formatter.format((float)ang * 57.2958));
 	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));
 	        		lineChartFrame lcf = circuit.createPlot(frequencySlider.getValue());
 	        		lcf.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

@@ -107,13 +107,13 @@ public class EditBranchWindow extends JFrame{
 		addComponentPanel = new JPanel();
 		addComponentPanel.setLayout(new GridLayout(1,8));
 		
-		labelOne = new JLabel("Delete a branch");
+		labelOne = new JLabel("Delete a branch",JLabel.CENTER);
 		labelTwo = new JLabel("Add a branch with a new component",JLabel.CENTER);
-		selectLabel = new JLabel("Select a section");
-		selectBranchLabel = new JLabel("Select a branch");
-		componentLabel = new JLabel("Component");
-		valueLabel = new JLabel("Enter value:");
-		nameLabel = new JLabel("Enter name:");
+		selectLabel = new JLabel("Select a section",JLabel.CENTER);
+		selectBranchLabel = new JLabel("Select a branch",JLabel.CENTER);
+		componentLabel = new JLabel("Component",JLabel.CENTER);
+		valueLabel = new JLabel("Enter value:",JLabel.CENTER);
+		nameLabel = new JLabel("Enter name:",JLabel.CENTER);
 		
 		valueTextfield = new JTextField();
 		valueTextfield.getDocument().addDocumentListener(new canCreate());
