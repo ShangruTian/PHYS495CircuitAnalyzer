@@ -41,21 +41,22 @@ public class Circuit {
 	
 
 	
-	public lineChartFrame createPlot(int maxFrequency) {
-		double[] freq = new double[maxFrequency];
-		for(int i = 0;i < maxFrequency;++i) {
-			double temp = i + 1;
+	public lineChartFrame createPlot(int minFrequency, int maxFrequency) {
+		int sampleSize = maxFrequency - minFrequency + 1;
+		double[] freq = new double[sampleSize];
+		for(int i = 0;i < sampleSize;++i) {
+			double temp = minFrequency + i;
 			freq[i] = temp;
 		}
-		double[] admittance = new double[maxFrequency];
-		for(int j = 0;j < maxFrequency;++j) {
+		double[] admittance = new double[sampleSize];
+		for(int j = 0;j < sampleSize;++j) {
 			ComplexNumber imp = calculateTotalImpedance(freq[j]);
 			double a = imp.getRealPart();
 			double b = imp.getImaginaryPart();
 			admittance[j] = 1/(Math.sqrt(a*a + b*b));
 		}
 		XYSeries series = new XYSeries("Admittance vs. Frequency");
-		for(int k = 0;k < maxFrequency;++k) {
+		for(int k = 0;k < sampleSize;++k) {
 			series.add(freq[k],admittance[k]);
 		}
 		XYSeriesCollection dataset = new XYSeriesCollection();

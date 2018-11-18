@@ -19,8 +19,10 @@ public class StartupWindow extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	private JSlider frequencySlider;
+	private JSlider minFrequencySlider;
 	
 	private JLabel frequencyLabel;
+	private JLabel minFrequencyLabel;
 	private JTextArea realImpedanceLabel;
 	private JTextArea imaginaryImpedanceLabel;
 	private JTextArea angleLabel;
@@ -43,6 +45,7 @@ public class StartupWindow extends JFrame{
 	private JPanel mainPanel;
 	private JPanel buttonPanel;
 	private JPanel sliderPanel;
+	private JPanel minSliderPanel;
 	private JPanel displayPanel;
 	private JPanel anglePanel;
 	private JPanel impedancePanel;
@@ -83,19 +86,20 @@ public class StartupWindow extends JFrame{
 	private void initComponents() {
 		
 		formatter = new DecimalFormat("0.##E0");
-		//voltageSlider = new JSlider(JSlider.HORIZONTAL,MIN_VOLTAGE,MAX_VOLTAGE,DEFAULT_VOLTAGE);
 		frequencySlider = new JSlider(JSlider.HORIZONTAL,MIN_FREQ,MAX_FREQ,DEFAULT_FREQ);
-		//voltageSlider.setMinorTickSpacing(10);
+		minFrequencySlider = new JSlider(JSlider.HORIZONTAL,MIN_FREQ,MAX_FREQ,MIN_FREQ);
 		frequencySlider.setMinorTickSpacing(1000);
+		minFrequencySlider.setMinorTickSpacing(1000);
 		
-		//voltageSlider.setMajorTickSpacing(10);
 		frequencySlider.setMajorTickSpacing(10000);
+		minFrequencySlider.setMajorTickSpacing(10000);
 		
-		//voltageSlider.setPaintTicks(true);
 		frequencySlider.setPaintTicks(false);
+		minFrequencySlider.setPaintTicks(false);
 		
-		//voltageSlider.setPaintLabels(true);
 		frequencySlider.setPaintLabels(false);
+		minFrequencySlider.setPaintLabels(false);
+		
 		
 
 		
@@ -108,9 +112,8 @@ public class StartupWindow extends JFrame{
 		editBranchButton = new JButton("View/Edit parallel section");
 		calculateButton = new JButton("Plot admittance vs frequency");
 		
-		frequencyLabel = new JLabel("Max frequency on plot: "+ frequencySlider.getValue() + "Hz",JLabel.CENTER);
-		//voltageLabel = new JLabel("Peak to peak voltage: 5V",JLabel.CENTER);
-		//currNodeLabel = new JLabel("Current node:");
+		frequencyLabel = new JLabel("Max frequency on plot(also used for calculation): "+ frequencySlider.getValue() + "Hz",JLabel.CENTER);
+		minFrequencyLabel = new JLabel("Min frequency on plot: "+ minFrequencySlider.getValue() + "Hz",JLabel.CENTER);
 		
 		
 		realImpedanceLabel = new JTextArea("Real impedance:");
@@ -131,13 +134,16 @@ public class StartupWindow extends JFrame{
 		sp4 = new JScrollPane(leadLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(3,1));
+		mainPanel.setLayout(new GridLayout(4,1));
 		
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(3,2));
 		
 		sliderPanel = new JPanel();
 		sliderPanel.setLayout(new GridLayout(1,2));
+		
+		minSliderPanel = new JPanel();
+		minSliderPanel.setLayout(new GridLayout(1,2));
 		
 		displayPanel = new JPanel();
 		displayPanel.setLayout(new GridLayout(1,4));
@@ -153,7 +159,7 @@ public class StartupWindow extends JFrame{
 		frequencySlider.addChangeListener(new ChangeListener() {
 	        @Override
 	        public void stateChanged(ChangeEvent ce) {
-	        	frequencyLabel.setText("Max frequency on plot: "+ frequencySlider.getValue() + "Hz");
+	        	frequencyLabel.setText("Max frequency on plot(also used for calculation): "+ frequencySlider.getValue() + "Hz");
 	        	if(canCalculate) {
 	        		canCalculate = false;
 	        		JSlider js = (JSlider)ce.getSource();
@@ -167,6 +173,13 @@ public class StartupWindow extends JFrame{
 	        		canCalculate = true;
 	        		//System.out.println("output: " + imp.getRealPart() + " " + imp.getImaginaryPart());
 	        	}
+	        }
+	    });
+		
+		minFrequencySlider.addChangeListener(new ChangeListener() {
+	        @Override
+	        public void stateChanged(ChangeEvent ce) {
+	        	minFrequencyLabel.setText("Min frequency on plot: "+ minFrequencySlider.getValue() + "Hz");
 	        }
 	    });
 		
@@ -210,6 +223,10 @@ public class StartupWindow extends JFrame{
 		sliderPanel.add(frequencyLabel);
 		sliderPanel.add(frequencySlider);
 		mainPanel.add(sliderPanel);
+		
+		minSliderPanel.add(minFrequencyLabel);
+		minSliderPanel.add(minFrequencySlider);
+		mainPanel.add(minSliderPanel);
 		
 		impedancePanel.add(sp1);
 		impedancePanel.add(sp2);
@@ -349,13 +366,12 @@ public class StartupWindow extends JFrame{
 				else {
 					canCalculate = true;
 					ComplexNumber imp =circuit.calculateTotalImpedance(frequencySlider.getValue());
-					System.out.println(imp == null);
 					realImpedanceLabel.setText("Real impedance: " + formatter.format(imp.getRealPart()));
 	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + formatter.format(imp.getImaginaryPart()));
 	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
 	        		angleLabel.setText("Phase angle(degree): " + formatter.format((float)ang * 57.2958));
 	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));
-	        		lineChartFrame lcf = circuit.createPlot(frequencySlider.getValue());
+	        		lineChartFrame lcf = circuit.createPlot(minFrequencySlider.getValue(),frequencySlider.getValue());
 	        		lcf.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				}
 			}

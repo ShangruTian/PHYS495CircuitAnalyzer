@@ -25,7 +25,7 @@ public class DrawCircuitWindow extends JFrame{
 	public DrawCircuitWindow(Circuit c) {
 		this.circuit = c;
 		setLocation(900,200);
-		setSize(circuit.canDraw() * 5,300);
+		setSize(circuit.canDraw() * 12,300);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		initializeComponents();
