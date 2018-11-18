@@ -63,6 +63,7 @@ public class StartupWindow extends JFrame{
 		StartupWindow sw = new StartupWindow();
 	}
 	
+	
 	public StartupWindow() {
 		super("PHYS 495 Circuit Analyzer");
 		setSize(900,450);
@@ -293,6 +294,9 @@ public class StartupWindow extends JFrame{
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new ViewCircuitWindow(circuit);
+				if(circuit.canDraw() != -1) {
+					new DrawCircuitWindow(circuit);
+				}
 			}
 
 		});

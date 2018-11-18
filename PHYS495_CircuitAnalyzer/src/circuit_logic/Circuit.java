@@ -84,6 +84,39 @@ public class Circuit {
 		return res;
 	}
 	
+	public int canDraw() {
+		//if can't, return -1
+		//else return the length of the circuit
+		CircuitNode start = start0.next();
+		int res = 1;
+		while(start != end0) {
+			if(start.getComponent().getType().equals("JunctionEnd")) {
+				CircuitNode temp = start.prev();
+				if(temp.getChildren().size() < 4) {
+					for(CircuitNode node: temp.getChildren()) {
+						node = node.next();
+						if(!node.isBranchStart() && node.next() == start) {
+							++res;
+						}
+						else {
+							return -1;
+						}
+					}
+					start = start.next();
+				}
+				else {
+					return -1;
+				}
+			}
+			else {
+				++res;
+				start = start.next();
+			}
+		}
+		++res;
+		return res;
+	}
+	
 	public void setWindow(StartupWindow s) {
 		this.sw = s;
 	}
