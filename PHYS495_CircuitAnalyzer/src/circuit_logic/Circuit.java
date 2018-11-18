@@ -62,6 +62,7 @@ public class Circuit {
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(series);
 		JFreeChart chart = ChartFactory.createXYLineChart("Admittance vs. Frequency", "Frequency", "Admittance", dataset,PlotOrientation.VERTICAL,true,true,false);
+		chart.getXYPlot().getRangeAxis().setAutoRange(true);
 		ChartPanel cp = new ChartPanel(chart);
 		lineChartFrame lcf = new lineChartFrame("Admittance vs. Frequency");
 		lcf.scp(cp);
@@ -465,7 +466,7 @@ public class Circuit {
 		Vector<String> result = new Vector<String>();
 		for(CircuitNode node = start0;node != end0; node = node.next()){
 			if(node == start0) {
-				result.add("Circuit Start");
+				result.add("Input");
 			}
 			
 			else if(node.getComponent().getType().equals("JunctionEnd")) {
@@ -483,7 +484,7 @@ public class Circuit {
 				result.add(node.getName());
 			}
 		}
-		result.add("Circuit End");
+		result.add("Ground");
 		
 		return result;
 	}

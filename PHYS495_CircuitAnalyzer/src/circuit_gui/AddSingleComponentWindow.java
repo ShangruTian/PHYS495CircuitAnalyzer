@@ -139,7 +139,7 @@ public class AddSingleComponentWindow extends JFrame{
 				validLocations.addElement(s);
 			}
 			if(s.equals("start0")) {
-				validLocations.addElement("Circuit start");
+				validLocations.addElement("Input");
 			}
 		}
 		locations = new String[validLocations.size()];
@@ -168,7 +168,7 @@ public class AddSingleComponentWindow extends JFrame{
 		addButton.addActionListener(new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		    	String location = (String) locationCombobox.getSelectedItem();
-		    	if(location.equals("Circuit start")) {
+		    	if(location.equals("Input")) {
 		    		location = "start0";
 		    	}
 		    	else if(location.startsWith("Parallel Section ")) {

@@ -165,7 +165,7 @@ public class AddParallelSectionWindow extends JFrame{
 				++i;
 			}
 			else if(s.equals("start0")) {
-				locations[i] = new String("Circuit start");
+				locations[i] = new String("Input");
 				++i;
 			}
 			else {
@@ -243,7 +243,7 @@ public class AddParallelSectionWindow extends JFrame{
 		completeButton.addActionListener(new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
 		    	String location = (String) locationCombobox.getSelectedItem();
-		    	if(location.equals("Circuit start")) {
+		    	if(location.equals("Input")) {
 		    		location = "start0";
 		    	}
 		    	if(location.startsWith("Parallel Section ")) {

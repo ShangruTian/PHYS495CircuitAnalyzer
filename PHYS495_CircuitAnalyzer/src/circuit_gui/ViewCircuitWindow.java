@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -29,6 +31,7 @@ public class ViewCircuitWindow extends JFrame{
 	private JPanel setOutputPanel;
 	private JPanel allComponentsPanel;
 	
+	private NumberFormat formatter;
 	
 	private JLabel selectOutputLabel;
 	
@@ -62,6 +65,8 @@ public class ViewCircuitWindow extends JFrame{
 	
 	
 	public void initializeComponents() {
+		formatter = new DecimalFormat("0.##E0");
+		
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new GridLayout(3,1));
 		
@@ -84,11 +89,13 @@ public class ViewCircuitWindow extends JFrame{
 		circuitLabel.setEditable(false);
 		String result = new String("");
 		for(String s:circuit.viewCircuit()) {
-			if(!s.equals("Circuit Start") && !s.equals("Circuit End") && !s.equals("(Output terminal)")) {
-				componentCombobox.addItem(s);
+			if(!s.equals("Input") && !s.equals("Ground") && !s.equals("(Output terminal)")) {
+				if(circuit.findNode("start0").next().getName() != s) {
+					componentCombobox.addItem(s);
+				}
 			}
 			result += s;
-			if(!s.equals("Circuit End")) {result += " -> ";}
+			if(!s.equals("Ground")) {result += " -> ";}
 		}
 		circuitLabel.setText(result);
 		sp1 = new JScrollPane(circuitLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -100,7 +107,7 @@ public class ViewCircuitWindow extends JFrame{
 			if(s.startsWith("end") ||s.startsWith("start")) {}
 			else {
 				CircuitComponent curr = circuit.getMap().get(s).getComponent();
-				allComponents.append(s + ": " + curr.getType() + ", " + curr.getValue() + "  ");
+				allComponents.append(s + ": " + curr.getType() + ", " + formatter.format(curr.getValue()) + "  ");
 			}
 		}
 		sp2 = new JScrollPane(allComponents,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -120,6 +127,10 @@ public class ViewCircuitWindow extends JFrame{
 		if(circuit.getMap().size() == 2) {
 			setOutputButton.setEnabled(false);
 		}
+		if(circuit.findNode("start0").next().next() == circuit.findNode("end0")) {
+			setOutputButton.setEnabled(false);
+		}
+
 	}
 	
 	private void cleanUp() {
