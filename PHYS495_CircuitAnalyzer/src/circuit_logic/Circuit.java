@@ -35,7 +35,7 @@ public class Circuit {
 		end0.setName("Circuit End");
 		CircuitMap.put("start0", start0);
 		CircuitMap.put("end0", end0);
-		outputStartingNode = null;
+		outputStartingNode = start0;
 		JunctionNum ++;
 	}
 	
@@ -407,10 +407,10 @@ public class Circuit {
 	
 	public double calculatePhaseAngle(double frequency){
 		ComplexNumber outputImpedance = calculateTotalImpedance(frequency);
-		CircuitNode curr = start0.next();
+		CircuitNode curr = start0;
 		ComplexNumber inputImpedance = new ComplexNumber(0,0);
 		while(curr != outputStartingNode) {
-			if(curr.getComponent().getType().equals("JunctionEnd")) {
+			if(curr.getComponent().getType().equals("JunctionEnd") && curr!= findNode("end0")) {
 				inputImpedance.add(calculateParallelImpedance(curr,frequency));
 				curr = curr.next();
 			}
@@ -438,10 +438,10 @@ public class Circuit {
 	
 	public String findLeadingVector(double frequency) {
 		ComplexNumber outputImpedance = calculateTotalImpedance(frequency);
-		CircuitNode curr = start0.next();
+		CircuitNode curr = start0;
 		ComplexNumber inputImpedance = new ComplexNumber(0,0);
 		while(curr != outputStartingNode) {
-			if(curr.getComponent().getType().equals("JunctionEnd")) {
+			if(curr.getComponent().getType().equals("JunctionEnd") && curr!= findNode("end0")) {
 				inputImpedance.add(calculateParallelImpedance(curr,frequency));
 				curr = curr.next();
 			}
@@ -484,7 +484,7 @@ public class Circuit {
 				result.add(node.getName());
 			}
 		}
-		result.add("Ground");
+		result.add("Output");
 		
 		return result;
 	}

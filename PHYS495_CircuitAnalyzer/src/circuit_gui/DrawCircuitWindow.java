@@ -124,7 +124,7 @@ public class DrawCircuitWindow extends JFrame{
 				start = start.next();
 			}
 		}
-		secondLine.append("Ground");
+		secondLine.append("Output");
 		firstLine.append('\n');
 		secondLine.append('\n');
 		drawArea.append(firstLine.toString());

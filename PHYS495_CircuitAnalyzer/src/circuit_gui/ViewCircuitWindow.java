@@ -89,13 +89,13 @@ public class ViewCircuitWindow extends JFrame{
 		circuitLabel.setEditable(false);
 		String result = new String("");
 		for(String s:circuit.viewCircuit()) {
-			if(!s.equals("Input") && !s.equals("Ground") && !s.equals("(Output terminal)")) {
+			if(!s.equals("Input") && !s.equals("Output") && !s.equals("(Output terminal)")) {
 				if(circuit.findNode("start0").next().getName() != s) {
 					componentCombobox.addItem(s);
 				}
 			}
 			result += s;
-			if(!s.equals("Ground")) {result += " -> ";}
+			if(!s.equals("Output")) {result += " -> ";}
 		}
 		circuitLabel.setText(result);
 		sp1 = new JScrollPane(circuitLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
