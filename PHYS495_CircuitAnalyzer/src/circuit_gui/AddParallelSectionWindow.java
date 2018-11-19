@@ -33,6 +33,7 @@ public class AddParallelSectionWindow extends JFrame{
 	private boolean branchCreated;
 	private String[] locations;
 	private HashMap<String,Integer> temp;
+	private int currBranch;
 	
 	private JPanel mainPanel;
 	private JPanel locationPanel;
@@ -50,7 +51,6 @@ public class AddParallelSectionWindow extends JFrame{
 	private JLabel statusLabel;
 	
 	private JComboBox<String> locationCombobox;
-	private JComboBox<Integer> branchCombobox;
 	private JComboBox<String> componentCombobox;
 	private JComboBox<String> unitCombobox;
 	
@@ -86,6 +86,7 @@ public class AddParallelSectionWindow extends JFrame{
 	
 	public void initializeComponents() {
 		branchCreated = false;
+		currBranch = 0;
 		temp = new HashMap<String,Integer>();
 		
 		mainPanel = new JPanel();
@@ -108,7 +109,7 @@ public class AddParallelSectionWindow extends JFrame{
 		
 		locationLabel = new JLabel("Location to insert after",JLabel.CENTER);
 		numOfBranchLabel = new JLabel("# of branches",JLabel.RIGHT);
-		selectBranchLabel = new JLabel("Select a branch",JLabel.CENTER);
+		selectBranchLabel = new JLabel("Please enter the number of Branch first",JLabel.CENTER);
 		selectComponentLabel = new JLabel("Component",JLabel.CENTER);
 		enterNameLabel = new JLabel("Enter name:",JLabel.CENTER);
 		enterValueLabel = new JLabel("Enter value:",JLabel.CENTER);
@@ -177,7 +178,6 @@ public class AddParallelSectionWindow extends JFrame{
 		Arrays.sort(locations);
 		
 		locationCombobox = new JComboBox<String>(locations);
-		branchCombobox = new JComboBox<Integer>();
 		
 		branchTextfield = new JTextField();
 		branchTextfield.getDocument().addDocumentListener(new createBranch());
@@ -200,14 +200,8 @@ public class AddParallelSectionWindow extends JFrame{
 		    	for(int i = 0;i < numOfBranch;++i) {
 		    		hasComponent[i] = false;
 		    		createdComponents[i] = null;
-		    		int num = i + 1;
-			    	branchCombobox.addItem(num);
 		    	}
-		    	branchCombobox.addActionListener (new ActionListener () {
-				    public void actionPerformed(ActionEvent e) {
-				    	addComponentButton.setEnabled(isValidInput() && !branchHasComponent() && !tempHasName(nameTextfield.getText()));
-				    }
-				});
+		    	selectBranchLabel.setText("Currently adding to branch #" + (currBranch + 1));
 		    	statusLabel.setText("Status: 0/" + numOfBranch +"branches created");
 		        addComponentButton.setEnabled(false);
 		        createBranchButton.setEnabled(false);
@@ -221,7 +215,7 @@ public class AddParallelSectionWindow extends JFrame{
 		addComponentButton.setEnabled(false);
 		addComponentButton.addActionListener(new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	int index = branchCombobox.getSelectedIndex();
+		    	int index = currBranch;
 		    	componentNames[index] = nameTextfield.getText();
 		    	createdComponents[index] = generateComponent();
 		    	hasComponent[index] = true;
@@ -237,6 +231,8 @@ public class AddParallelSectionWindow extends JFrame{
 		    	statusLabel.setText("Status: " + createdBranches +"/" + numOfBranch +"branches created");
 		    	addComponentButton.setEnabled(false);
 		    	completeButton.setEnabled(isComplete());
+		    	currBranch ++;
+		    	selectBranchLabel.setText("Currently adding to branch #" + (currBranch + 1));
 		    }
 		});
 		completeButton = new JButton("Complete");
@@ -276,7 +272,6 @@ public class AddParallelSectionWindow extends JFrame{
 		mainPanel.add(numOfBranchPanel);
 		
 		selectBranchPanel.add(selectBranchLabel);
-		selectBranchPanel.add(branchCombobox);
 		
 		mainPanel.add(selectBranchPanel);
 		
@@ -361,8 +356,7 @@ public class AddParallelSectionWindow extends JFrame{
 	}
 	
 	private boolean branchHasComponent() {
-		int selectedBranch = branchCombobox.getSelectedIndex();
-		return hasComponent[selectedBranch];
+		return hasComponent[currBranch];
 	}
 	
 	private void cleanUp() {
