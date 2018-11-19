@@ -109,7 +109,7 @@ public class AddParallelSectionWindow extends JFrame{
 		
 		locationLabel = new JLabel("Location to insert after",JLabel.CENTER);
 		numOfBranchLabel = new JLabel("# of branches",JLabel.RIGHT);
-		selectBranchLabel = new JLabel("Please enter the number of Branch first",JLabel.CENTER);
+		selectBranchLabel = new JLabel("Please enter the number of branches first",JLabel.CENTER);
 		selectComponentLabel = new JLabel("Component",JLabel.CENTER);
 		enterNameLabel = new JLabel("Enter name:",JLabel.CENTER);
 		enterValueLabel = new JLabel("Enter value:",JLabel.CENTER);
