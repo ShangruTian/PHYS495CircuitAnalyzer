@@ -31,6 +31,7 @@ public class InfoWindow extends JFrame{
 		mainPanel.setLayout(new GridLayout(1,1));
 		text = new JTextArea();
 		text.setLineWrap(true);
+		text.setEditable(false);
 		
 		StringBuilder firstTip = new StringBuilder();
 		firstTip.append("Notes for using this program:");
