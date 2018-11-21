@@ -6,7 +6,7 @@ public class Inductor extends CircuitComponent{
 	}
 
 	public ComplexNumber calculateImpedance(double frequency) {
-		return new ComplexNumber(0,frequency * value);
+		return new ComplexNumber(0,frequency * value * Math.PI * 2);
 	}
 	
 }

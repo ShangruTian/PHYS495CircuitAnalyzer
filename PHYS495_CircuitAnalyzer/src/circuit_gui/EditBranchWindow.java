@@ -150,7 +150,7 @@ public class EditBranchWindow extends JFrame{
 		
 		resistorUnits = new String[] {"Ohms","Kiloohms","Megaohms"};
 		capacitorUnits = new String[] {"Millifarad","Microfarad","Picofarad"};
-		inductorUnits = new String[] {"Henry","Microhenry","Milihenry"};
+		inductorUnits = new String[] {"Henry","Microhenry","Millihenry"};
 		
 		unitCombobox = new JComboBox<String>(resistorUnits);
 		unitCombobox.setSelectedItem("Ohms");

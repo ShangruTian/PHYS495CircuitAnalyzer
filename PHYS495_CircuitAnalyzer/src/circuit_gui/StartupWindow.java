@@ -4,8 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import java.util.Vector;
+
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -67,6 +66,7 @@ public class StartupWindow extends JFrame{
 	public static void main(String[] args) {
 		//System.out.println("debug:");
 		StartupWindow sw = new StartupWindow();
+		sw.showInfoWindow();
 	}
 	
 	
@@ -81,6 +81,14 @@ public class StartupWindow extends JFrame{
 		addActionListeners();
 		canCalculate = false;
 		this.setVisible(true);
+	}
+	
+	public void showInfoWindow() {
+		new InfoWindow().setVisible(true);
+	}
+	
+	public boolean frequencyIsCorrect() {
+		return minFrequencySlider.getValue() < frequencySlider.getValue();
 	}
 	
 	private void initComponents() {
@@ -159,19 +167,26 @@ public class StartupWindow extends JFrame{
 		frequencySlider.addChangeListener(new ChangeListener() {
 	        @Override
 	        public void stateChanged(ChangeEvent ce) {
+        		calculateButton.setEnabled(frequencyIsCorrect());
 	        	frequencyLabel.setText("Max frequency on plot(also used for calculation): "+ frequencySlider.getValue() + "Hz");
-	        	if(canCalculate) {
-	        		canCalculate = false;
-	        		JSlider js = (JSlider)ce.getSource();
-	        		double frequency = (double)js.getValue();
-	        		ComplexNumber imp =circuit.calculateTotalImpedance(frequency);	
-	        		realImpedanceLabel.setText("Real impedance: " + formatter.format(imp.getRealPart()));
-	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + formatter.format(imp.getImaginaryPart()));
-	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
-	        		angleLabel.setText("Phase angle(degree): " + formatter.format((float)ang * 57.2958));
-	        		leadLabel.setText(circuit.findLeadingVector(frequency));
-	        		canCalculate = true;
-	        		//System.out.println("output: " + imp.getRealPart() + " " + imp.getImaginaryPart());
+	        	if(frequencyIsCorrect()) {
+	        		calculateButton.setText("Plot admittance vs frequency");
+	        		if(canCalculate) {
+		        		canCalculate = false;
+		        		JSlider js = (JSlider)ce.getSource();
+		        		double frequency = (double)js.getValue();
+		        		ComplexNumber imp =circuit.calculateTotalImpedance(frequency);	
+		        		realImpedanceLabel.setText("Real impedance: " + formatter.format(imp.getRealPart()));
+		        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + formatter.format(imp.getImaginaryPart()));
+		        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
+		        		angleLabel.setText("Phase angle(degree): " + formatter.format((float)ang * 57.2958));
+		        		leadLabel.setText(circuit.findLeadingVector(frequency));
+		        		canCalculate = true;
+		        		//System.out.println("output: " + imp.getRealPart() + " " + imp.getImaginaryPart());
+		        	}
+	        	}
+	        	else {
+	        		calculateButton.setText("Please adjust min/max frequency");
 	        	}
 	        }
 	    });
@@ -179,7 +194,14 @@ public class StartupWindow extends JFrame{
 		minFrequencySlider.addChangeListener(new ChangeListener() {
 	        @Override
 	        public void stateChanged(ChangeEvent ce) {
+        		calculateButton.setEnabled(frequencyIsCorrect());
 	        	minFrequencyLabel.setText("Min frequency on plot: "+ minFrequencySlider.getValue() + "Hz");
+	        	if(frequencyIsCorrect()) {
+	        		calculateButton.setText("Plot admittance vs frequency");
+	        	}
+	        	else {
+	        		calculateButton.setText("Please adjust min/max frequency");
+	        	}
 	        }
 	    });
 		
@@ -222,11 +244,11 @@ public class StartupWindow extends JFrame{
 		
 		sliderPanel.add(frequencyLabel);
 		sliderPanel.add(frequencySlider);
-		mainPanel.add(sliderPanel);
 		
 		minSliderPanel.add(minFrequencyLabel);
 		minSliderPanel.add(minFrequencySlider);
 		mainPanel.add(minSliderPanel);
+		mainPanel.add(sliderPanel);
 		
 		impedancePanel.add(sp1);
 		impedancePanel.add(sp2);
