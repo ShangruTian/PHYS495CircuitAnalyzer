@@ -94,7 +94,7 @@ public class Circuit {
 		while(start != end0) {
 			if(start.getComponent().getType().equals("JunctionEnd")) {
 				CircuitNode temp = start.prev();
-				if(temp.getChildren().size() < 4) {
+				if(temp.getChildren().size() < 4 && temp.getChildren().size() > 1) {
 					for(CircuitNode node: temp.getChildren()) {
 						node = node.next();
 						if(!node.isBranchStart() && node.next() == start) {

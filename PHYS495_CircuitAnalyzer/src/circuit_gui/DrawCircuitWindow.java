@@ -83,7 +83,7 @@ public class DrawCircuitWindow extends JFrame{
 					thirdLine.append("  ");
 					start = start.next();
 				}
-				else {
+				else if(size == 3){
 					CircuitNode firstNode = start.getChildren().get(0).next();
 					CircuitNode secondNode = start.getChildren().get(1).next();
 					CircuitNode thirdNode = start.getChildren().get(2).next();
