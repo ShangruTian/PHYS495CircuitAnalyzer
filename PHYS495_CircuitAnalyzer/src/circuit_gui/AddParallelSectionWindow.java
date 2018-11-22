@@ -408,7 +408,7 @@ public class AddParallelSectionWindow extends JFrame{
 		catch(NumberFormatException e) {
 			return false;
 		}
-		return true;
+		return Integer.parseInt(branchTextfield.getText()) > 1;
 	}
 	
 	
