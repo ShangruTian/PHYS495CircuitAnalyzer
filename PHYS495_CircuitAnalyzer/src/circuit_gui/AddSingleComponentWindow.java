@@ -129,7 +129,7 @@ public class AddSingleComponentWindow extends JFrame{
 		
 		resistorUnits = new String[] {"Ohms","Kiloohms","Megaohms"};
 		capacitorUnits = new String[] {"Millifarad","Microfarad","Picofarad"};
-		inductorUnits = new String[] {"Henry","Microhenry","Millihenry"};
+		inductorUnits = new String[] {"Henry","Millihenry","Microhenry"};
 		
 		Vector<String> validLocations = new Vector<String>();
 		

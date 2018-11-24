@@ -89,7 +89,7 @@ private static final long serialVersionUID = 1;
 		
 		resistorUnits = new String[] {"Ohms","Kiloohms","Megaohms"};
 		capacitorUnits = new String[] {"Millifarad","Microfarad","Picofarad"};
-		inductorUnits = new String[] {"Henry","Microhenry","Millihenry"};
+		inductorUnits = new String[] {"Henry","Millihenry","Microhenry"};
 		
 		unitCombobox = new JComboBox<String>(resistorUnits);
 		unitCombobox.setSelectedItem("Ohms");

@@ -144,7 +144,7 @@ public class AddParallelSectionWindow extends JFrame{
 		
 		resistorUnits = new String[] {"Ohms","Kiloohms","Megaohms"};
 		capacitorUnits = new String[] {"Millifarad","Microfarad","Picofarad"};
-		inductorUnits = new String[] {"Henry","Microhenry","Millihenry"};
+		inductorUnits = new String[] {"Henry","Millihenry","Microhenry"};
 		
 		unitCombobox = new JComboBox<String>(resistorUnits);
 		unitCombobox.setSelectedItem("Ohms");
@@ -232,7 +232,12 @@ public class AddParallelSectionWindow extends JFrame{
 		    	addComponentButton.setEnabled(false);
 		    	completeButton.setEnabled(isComplete());
 		    	currBranch ++;
-		    	selectBranchLabel.setText("Currently adding to branch #" + (currBranch + 1));
+		    	if(currBranch > numOfBranch -1) {
+		    		selectBranchLabel.setText("All branches created, click the complete button to finish.");
+		    	}
+		    	else {
+		    		selectBranchLabel.setText("Currently adding to branch #" + (currBranch + 1));
+		    	}	
 		    }
 		});
 		completeButton = new JButton("Complete");
