@@ -72,6 +72,35 @@ public class Circuit {
 		return lcf;
 	}
 	
+	public lineChartFrame createAnglePlot(int minFrequency, int maxFrequency) {
+		int sampleSize = maxFrequency - minFrequency + 1;
+		double[] freq = new double[sampleSize];
+		for(int i = 0;i < sampleSize;++i) {
+			double temp = minFrequency + i;
+			freq[i] = temp;
+		}
+		double[] angle = new double[sampleSize];
+		for(int j = 0;j < sampleSize;++j) {
+			angle[j] = calculatePhaseAngle(freq[j]) * 57.2958;
+		}
+		XYSeries series = new XYSeries("Phase angle vs. Frequency");
+		for(int k = 0;k < sampleSize;++k) {
+			series.add(freq[k],angle[k]);
+		}
+		XYSeriesCollection dataset = new XYSeriesCollection();
+		dataset.addSeries(series);
+		JFreeChart chart = ChartFactory.createXYLineChart("Phase angle vs. Frequency", "Frequency", "Phase angle", dataset,PlotOrientation.VERTICAL,true,true,false);
+		chart.getXYPlot().getRangeAxis().setAutoRange(true);
+		ChartPanel cp = new ChartPanel(chart);
+		lineChartFrame lcf = new lineChartFrame("Phase angle vs. Frequency");
+		lcf.scp(cp);
+		lcf.pack();
+		RefineryUtilities.centerFrameOnScreen(lcf);
+		lcf.setLocation(500, 200);
+		lcf.setVisible(true);
+		return lcf;
+	}
+	
 	private boolean pureCapacitive() {
 		boolean res = true;
 		for(String s: CircuitMap.keySet()) {

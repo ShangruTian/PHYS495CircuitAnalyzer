@@ -17,7 +17,7 @@ public class InfoWindow extends JFrame{
 	private JScrollPane sp;
 	
 	public InfoWindow() {
-		setSize(640,200);
+		setSize(640,180);
 		setLocation(300,300);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
@@ -44,7 +44,7 @@ public class InfoWindow extends JFrame{
 		text.append(secondTip.toString());
 		
 		StringBuilder thirdTip = new StringBuilder();
-		thirdTip.append("2)The program's calculation is based everything you inserted in the program by default. If you wish to calculate only part of the circuit, you can set the output terminal before any section except the section right after the input.");
+		thirdTip.append("2)The program's calculation is based everything you inserted in the circuit by default.");
 		thirdTip.append('\n');
 		text.append(thirdTip.toString());
 		

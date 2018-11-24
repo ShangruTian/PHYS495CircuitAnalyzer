@@ -118,7 +118,7 @@ public class StartupWindow extends JFrame{
 		changeComponentButton = new JButton("Change a component");
 		viewCircuitButton = new JButton("View entire circuit");
 		editBranchButton = new JButton("View/Edit parallel section");
-		calculateButton = new JButton("Plot admittance vs frequency");
+		calculateButton = new JButton("Plot admittance and phase angle");
 		
 		frequencyLabel = new JLabel("Max frequency on plot(also used for calculation): "+ frequencySlider.getValue() + "Hz",JLabel.CENTER);
 		minFrequencyLabel = new JLabel("Min frequency on plot: "+ minFrequencySlider.getValue() + "Hz",JLabel.CENTER);
@@ -170,7 +170,7 @@ public class StartupWindow extends JFrame{
         		calculateButton.setEnabled(frequencyIsCorrect());
 	        	frequencyLabel.setText("Max frequency on plot(also used for calculation): "+ frequencySlider.getValue() + "Hz");
 	        	if(frequencyIsCorrect()) {
-	        		calculateButton.setText("Plot admittance vs frequency");
+	        		calculateButton.setText("Plot admittance and phase angle");
 	        		if(canCalculate) {
 		        		canCalculate = false;
 		        		JSlider js = (JSlider)ce.getSource();
@@ -197,7 +197,7 @@ public class StartupWindow extends JFrame{
         		calculateButton.setEnabled(frequencyIsCorrect());
 	        	minFrequencyLabel.setText("Min frequency on plot: "+ minFrequencySlider.getValue() + "Hz");
 	        	if(frequencyIsCorrect()) {
-	        		calculateButton.setText("Plot admittance vs frequency");
+	        		calculateButton.setText("Plot admittance and phase angle");
 	        	}
 	        	else {
 	        		calculateButton.setText("Please adjust min/max frequency");
@@ -395,6 +395,8 @@ public class StartupWindow extends JFrame{
 	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));
 	        		lineChartFrame lcf = circuit.createPlot(minFrequencySlider.getValue(),frequencySlider.getValue());
 	        		lcf.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	        		lineChartFrame lcf2 = circuit.createAnglePlot(minFrequencySlider.getValue(),frequencySlider.getValue());
+	        		lcf2.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 				}
 			}
 

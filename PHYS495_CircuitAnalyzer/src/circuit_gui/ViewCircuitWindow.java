@@ -68,7 +68,7 @@ public class ViewCircuitWindow extends JFrame{
 		formatter = new DecimalFormat("0.##E0");
 		
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(3,1));
+		mainPanel.setLayout(new GridLayout(2,1));
 		
 		displayPanel = new JPanel();
 		displayPanel.setLayout(new GridLayout(1,1));
@@ -149,7 +149,7 @@ public class ViewCircuitWindow extends JFrame{
 		
 		allComponentsPanel.add(sp2);
 		mainPanel.add(allComponentsPanel);
-		mainPanel.add(setOutputPanel);
+		//mainPanel.add(setOutputPanel);
 		
 		add(mainPanel);
 	}
