@@ -17,6 +17,7 @@ import javax.swing.JTextArea;
 
 import circuit_logic.Circuit;
 import circuit_logic.CircuitComponent;
+import circuit_logic.CircuitNode;
 
 public class ViewCircuitWindow extends JFrame{
 	/**
@@ -29,13 +30,17 @@ public class ViewCircuitWindow extends JFrame{
 	private JPanel mainPanel;
 	private JPanel displayPanel;
 	private JPanel setOutputPanel;
+	private JPanel labelPanel;
 	private JPanel allComponentsPanel;
 	
 	private NumberFormat formatter;
 	
 	private JLabel selectOutputLabel;
+	private JLabel start;
+	private JLabel end;
 	
-	private JComboBox<String> componentCombobox;
+	private JComboBox<String> startLocationCombobox;
+	private JComboBox<String> endLocationCombobox;
 	
 	
 	private JButton setOutputButton;
@@ -45,9 +50,12 @@ public class ViewCircuitWindow extends JFrame{
 	private JScrollPane sp1;
 	private JScrollPane sp2;
 	
+	private String firstString;
+	private String secondString;
+	
 	public ViewCircuitWindow(Circuit c) {
 		this.circuit = c;
-		setSize(480,200);
+		setSize(900,250);
 		setLocation(200,200);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setResizable(false);
@@ -68,38 +76,87 @@ public class ViewCircuitWindow extends JFrame{
 		formatter = new DecimalFormat("0.##E0");
 		
 		mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(2,1));
+		mainPanel.setLayout(new GridLayout(4,1));
+		
+		labelPanel = new JPanel();
+		labelPanel.setLayout(new GridLayout(1,1));
 		
 		displayPanel = new JPanel();
 		displayPanel.setLayout(new GridLayout(1,1));
 		
 		setOutputPanel = new JPanel();
-		setOutputPanel.setLayout(new GridLayout(1,3));
+		setOutputPanel.setLayout(new GridLayout(1,5));
 		
 		allComponentsPanel = new JPanel();
 		allComponentsPanel.setLayout(new GridLayout(1,1));
 		
-		selectOutputLabel = new JLabel("Select an output terminal");
+		selectOutputLabel = new JLabel("Select locations for your 2 output terminals",JLabel.CENTER);
+		start = new JLabel("1st terminal",JLabel.CENTER);
+		end = new JLabel("2nd terminal",JLabel.CENTER);
 		
-		componentCombobox = new JComboBox<String>();
+		startLocationCombobox = new JComboBox<String>();
+		endLocationCombobox = new JComboBox<String>();
 		
 		
 		circuitLabel = new JTextArea();
 		circuitLabel.setLineWrap(false);
 		circuitLabel.setEditable(false);
-		String result = new String("");
+		StringBuilder result = new StringBuilder();
 		for(String s:circuit.viewCircuit()) {
-			if(!s.equals("Input") && !s.equals("Output") && !s.equals("(Output terminal)")) {
-				if(circuit.findNode("start0").next().getName() != s) {
-					componentCombobox.addItem(s);
-				}
+			if(!s.equals("Function generator") && !s.equals("Back to function generator") && !s.equals("||")) {				
+					startLocationCombobox.addItem(s);
+					endLocationCombobox.addItem(s);
 			}
-			result += s;
-			if(!s.equals("Output")) {result += " -> ";}
+			result.append(s);
+	
+			if(!s.equals("Back to function generator")) {
+				result.append("->");
+			}
 		}
-		circuitLabel.setText(result);
+		
+		result.append('\n');
+		firstString = result.toString();
+		circuitLabel.append(firstString);
+		if(circuit.hasOutput()){
+			String startName = circuit.getOutputStart().getName();
+			String endName = circuit.getOutputEnd().getName();
+			if(startName.startsWith("end")) {
+				String firstIndex = startName.substring(3);
+				startName = "Parallel section " + firstIndex;
+			}
+			if(endName.startsWith("end")) {
+				String secondIndex = endName.substring(3);
+				endName = "Parallel section " + secondIndex;
+			}
+			secondString = new String("Output terminals: Before " + startName + ", After " + endName);
+		}
+		else secondString = new String("(No output terminals selected)");
+		circuitLabel.append(secondString);
 		sp1 = new JScrollPane(circuitLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
+		startLocationCombobox.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		        String s = (String) startLocationCombobox.getSelectedItem();
+		        endLocationCombobox.removeAllItems();
+		        if(s.startsWith("Parallel Section ")) {
+		        	String index = s.substring(17);
+		        	s = "end" + index;
+		        }
+		        CircuitNode startNode = circuit.findNode(s);
+		        while(startNode != circuit.findNode("end0")) {
+		        	if(startNode.getComponent().getType().equals("JunctionEnd")) {
+		        		endLocationCombobox.addItem("Parallel Section " + (int)startNode.getComponent().getValue());
+		        		startNode = startNode.next();
+		        	}
+		        	else {
+		        		endLocationCombobox.addItem(startNode.getName());
+		        		startNode = startNode.next();
+		        	}
+		        }
+		    }
+		});
+		startLocationCombobox.setEnabled(circuit.getMap().size() != 2);
+		endLocationCombobox.setEnabled(circuit.getMap().size() != 2);
 		allComponents = new JTextArea();
 		allComponents.setLineWrap(true);
 		allComponents.setEditable(false);
@@ -111,25 +168,31 @@ public class ViewCircuitWindow extends JFrame{
 			}
 		}
 		sp2 = new JScrollPane(allComponents,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		setOutputButton = new JButton("Set as output");
+		
+		setOutputButton = new JButton("Set terminals");
 		setOutputButton.addActionListener(new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		    	String location = (String) componentCombobox.getSelectedItem();
-		    	if(location.startsWith("Parallel Section ")) {
-		    		String index = location.substring(17);
-		    		location = "end" + index;
+		    	String location1 = (String) startLocationCombobox.getSelectedItem();
+		    	if(location1.startsWith("Parallel Section ")) {
+		    		String index = location1.substring(17);
+		    		location1 = "end" + index;
 		    	}
-		    	circuit.setOutput(circuit.findNode(location));
+		    	circuit.setOutputStart(circuit.findNode(location1));
+		    	String location2 = (String) endLocationCombobox.getSelectedItem();
+		    	if(location2.startsWith("Parallel Section ")) {
+		    		String index = location2.substring(17);
+		    		location2 = "end" + index;
+		    	}
+		    	circuit.setOutputEnd(circuit.findNode(location2));
 		        cleanUp();
 		        
 		    }
 		});
+
 		if(circuit.getMap().size() == 2) {
 			setOutputButton.setEnabled(false);
 		}
-		if(circuit.findNode("start0").next().next() == circuit.findNode("end0")) {
-			setOutputButton.setEnabled(false);
-		}
+
 
 	}
 	
@@ -142,14 +205,20 @@ public class ViewCircuitWindow extends JFrame{
 		displayPanel.add(sp1);
 		mainPanel.add(displayPanel);
 		
-		setOutputPanel.add(selectOutputLabel);
-		setOutputPanel.add(componentCombobox);
+		labelPanel.add(selectOutputLabel);
+
+		
+		setOutputPanel.add(start);
+		setOutputPanel.add(startLocationCombobox);
+		setOutputPanel.add(end);
+		setOutputPanel.add(endLocationCombobox);
 		setOutputPanel.add(setOutputButton);
 		
 		
 		allComponentsPanel.add(sp2);
 		mainPanel.add(allComponentsPanel);
-		//mainPanel.add(setOutputPanel);
+		mainPanel.add(labelPanel);
+		mainPanel.add(setOutputPanel);
 		
 		add(mainPanel);
 	}

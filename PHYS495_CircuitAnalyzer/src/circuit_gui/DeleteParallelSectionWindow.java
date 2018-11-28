@@ -101,6 +101,7 @@ public class DeleteParallelSectionWindow extends JFrame{
 		
 		private void cleanUp() {
 			circuit.windowEnableButtons();
+			circuit.getWindow().setCalculateButton();
 			this.dispose();
 		}
 }

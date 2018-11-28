@@ -20,6 +20,7 @@ public class Circuit {
 	private CircuitNode end0;
 	private CircuitNode current;
 	private CircuitNode outputStartingNode;
+	private CircuitNode outputEndingNode;
 	private static int JunctionNum;
 	private HashMap<String,CircuitNode> CircuitMap;
 	private StartupWindow sw;
@@ -48,23 +49,21 @@ public class Circuit {
 			double temp = minFrequency + i;
 			freq[i] = temp;
 		}
-		double[] admittance = new double[sampleSize];
+		double[] percentage = new double[sampleSize];
 		for(int j = 0;j < sampleSize;++j) {
-			ComplexNumber imp = calculateTotalImpedance(freq[j]);
-			double a = imp.getRealPart();
-			double b = imp.getImaginaryPart();
-			admittance[j] = 1/(Math.sqrt(a*a + b*b));
+
+			percentage[j] = calculateVoltagePercentage(freq[j]);
 		}
-		XYSeries series = new XYSeries("Admittance vs. Frequency");
+		XYSeries series = new XYSeries("Voltage percentage vs. Frequency");
 		for(int k = 0;k < sampleSize;++k) {
-			series.add(freq[k],admittance[k]);
+			series.add(freq[k],percentage[k]);
 		}
 		XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(series);
-		JFreeChart chart = ChartFactory.createXYLineChart("Admittance vs. Frequency", "Frequency", "Admittance", dataset,PlotOrientation.VERTICAL,true,true,false);
+		JFreeChart chart = ChartFactory.createXYLineChart("Voltage percentage vs. Frequency", "Frequency", "Voltage percentage", dataset,PlotOrientation.VERTICAL,true,true,false);
 		chart.getXYPlot().getRangeAxis().setAutoRange(true);
 		ChartPanel cp = new ChartPanel(chart);
-		lineChartFrame lcf = new lineChartFrame("Admittance vs. Frequency");
+		lineChartFrame lcf = new lineChartFrame("Voltage percentage vs. Frequency");
 		lcf.scp(cp);
 		lcf.pack();
 		RefineryUtilities.centerFrameOnScreen(lcf);
@@ -156,33 +155,34 @@ public class Circuit {
 		sw.reenableButtons();
 	}
 	
+	public StartupWindow getWindow() {
+		return this.sw;
+	}
 	public HashMap<String,CircuitNode> getMap(){
 		return CircuitMap;
 	}
 	
-	public void setOutput(CircuitNode node) {
+	public void setOutputStart(CircuitNode node) {
 		this.outputStartingNode = node;
 	}
 	
-	public boolean hasOutput() {
-		return outputStartingNode != null;
+	public void setOutputEnd(CircuitNode node) {
+		this.outputEndingNode = node;
 	}
 	
-	public void changeOutput() {
-		if(outputStartingNode == null) {}
-		
-		else if(outputStartingNode.prev() == start0 && outputStartingNode.next() == end0) {
-			outputStartingNode = null;
-		}
-		
-		else if(outputStartingNode.prev() == start0 && outputStartingNode.next() != end0) {
-			outputStartingNode = outputStartingNode.next();
-		}
-		
-		else {
-			outputStartingNode = outputStartingNode.prev();
-		}
+	public boolean hasOutput() {
+		return outputStartingNode != null && outputEndingNode != null;
 	}
+	
+	public CircuitNode getOutputStart() {
+		return outputStartingNode;
+	}
+	
+	public CircuitNode getOutputEnd() {
+		return outputEndingNode;
+	}
+	
+	
 	
 	public boolean nameExist(String name) {
 		return CircuitMap.containsKey(name);
@@ -204,8 +204,11 @@ public class Circuit {
 		CircuitNode oldNode = CircuitMap.get(oldName);
 		setCurrentNode(oldNode);
 		addSingleNewNode(newName,c);
-		if(outputStartingNode == oldNode) {
-			setOutput(findNode(newName));
+		if(oldNode  == outputStartingNode ) {
+			setOutputStart(findNode(newName));
+		}
+		else if(oldNode == outputEndingNode) {
+			setOutputEnd(findNode(newName));
 		}
 		deleteSingleNode(oldName);
 		setCurrentNode(CircuitMap.get(newName));
@@ -245,7 +248,10 @@ public class Circuit {
 	public void deleteSingleNode(String name) {
 		CircuitNode toDelete = CircuitMap.get(name);
 		if(toDelete == outputStartingNode) {
-			changeOutput();
+			outputStartingNode = null;
+		}
+		else if(toDelete == outputEndingNode) {
+			outputEndingNode = null;
 		}
 		CircuitNode toDeletePrev = toDelete.prev();
 		
@@ -309,7 +315,10 @@ public class Circuit {
 	public void removeParallelSection(String JunctionEndNum) {
 		CircuitNode end = CircuitMap.get("end" + JunctionEndNum);
 		if(end == outputStartingNode) {
-			changeOutput();
+			outputStartingNode = null;
+		}
+		else if(end == outputEndingNode) {
+			outputEndingNode = null;
 		}
 		CircuitNode prev = end.prev();
 		CircuitNode next = end.next();
@@ -419,7 +428,7 @@ public class Circuit {
 		else {
 			ComplexNumber ans = new ComplexNumber(0,0);
 			CircuitNode curr = outputStartingNode;
-			while(curr != end0) {
+			while(curr != outputEndingNode.next()) {
 				if(curr.getComponent().getType().equals("JunctionEnd")) {
 					ans.add(calculateParallelImpedance(curr,frequency));
 					curr = curr.next();
@@ -434,11 +443,40 @@ public class Circuit {
 		}
 	}
 	
+	public double calculateVoltagePercentage(double frequency) {
+		if(pureCapacitive() && frequency == 0) {
+			return 0;
+		}
+		else {
+			ComplexNumber sectionImpedance = calculateTotalImpedance(frequency);
+			CircuitNode curr = start0;
+			ComplexNumber temp = new ComplexNumber (0,0);
+			while(curr != end0) {
+				if(curr.getComponent().getType().equals("JunctionEnd")) {
+					temp.add(calculateParallelImpedance(curr,frequency));
+					curr = curr.next();
+				}
+				else {
+					temp.add(curr.getComponent().calculateImpedance(frequency));
+					curr = curr.next();
+				}
+			}
+			double a = sectionImpedance.getRealPart();
+			double b = sectionImpedance.getImaginaryPart();
+			double c = temp.getRealPart();
+			double d = temp.getImaginaryPart();
+			
+			double num = Math.sqrt(a*a + b*b);
+			double den = Math.sqrt(c*c + d*d);
+			
+			return num/den;
+		}
+	}
+	
 	public double calculatePhaseAngle(double frequency){
-		ComplexNumber outputImpedance = calculateTotalImpedance(frequency);
 		CircuitNode curr = start0;
 		ComplexNumber inputImpedance = new ComplexNumber(0,0);
-		while(curr != outputStartingNode) {
+		while(curr != end0) {
 			if(curr.getComponent().getType().equals("JunctionEnd") && curr!= findNode("end0")) {
 				inputImpedance.add(calculateParallelImpedance(curr,frequency));
 				curr = curr.next();
@@ -449,7 +487,6 @@ public class Circuit {
 			}
 		}
 
-		inputImpedance.add(outputImpedance);
 		
 		if(inputImpedance.getRealPart() == 0) {
 			if(inputImpedance.getImaginaryPart() > 0) {
@@ -467,25 +504,12 @@ public class Circuit {
 	}
 	
 	public String findLeadingVector(double frequency) {
-		ComplexNumber outputImpedance = calculateTotalImpedance(frequency);
-		CircuitNode curr = start0;
-		ComplexNumber inputImpedance = new ComplexNumber(0,0);
-		while(curr != outputStartingNode) {
-			if(curr.getComponent().getType().equals("JunctionEnd") && curr!= findNode("end0")) {
-				inputImpedance.add(calculateParallelImpedance(curr,frequency));
-				curr = curr.next();
-			}
-			else {
-				inputImpedance.add(curr.getComponent().calculateImpedance(frequency));
-				curr = curr.next();
-			}
-		}
-		inputImpedance.add(outputImpedance);
-		if(inputImpedance.getImaginaryPart() > 0) {
+		double phaseAngle = calculatePhaseAngle(frequency);
+		if(phaseAngle > 0) {
 			return new String("Output leads input");
 		}
 		
-		else if(inputImpedance.getImaginaryPart() < 0) {
+		else if(phaseAngle < 0) {
 			return new String("Input leads output");
 		}
 		
@@ -496,25 +520,41 @@ public class Circuit {
 		Vector<String> result = new Vector<String>();
 		for(CircuitNode node = start0;node != end0; node = node.next()){
 			if(node == start0) {
-				result.add("Input");
+				result.add("Function generator");
+				
 			}
 			
 			else if(node.getComponent().getType().equals("JunctionEnd")) {
 				if(node == outputStartingNode) {
-					result.add("(Output terminal)");
+					result.add("||");
 				}
 				result.add("Parallel Section " + (int)node.getComponent().getValue());
+				if(node == outputEndingNode) {
+					result.add("||");
+				}
+			}
+			
+			else if(node == outputEndingNode && node == outputStartingNode) {
+				result.add("||");
+				result.add(node.getName());
+				result.add("||");
 			}
 			
 			else if(node == outputStartingNode) {
-				result.add("(Output terminal)");
+				result.add("||");
 				result.add(node.getName());
+
 			}
+			else if(node == outputEndingNode) {
+				result.add(node.getName());
+				result.add("||");
+			}
+			
 			else {
 				result.add(node.getName());
 			}
 		}
-		result.add("Output");
+		result.add("Back to function generator");
 		
 		return result;
 	}

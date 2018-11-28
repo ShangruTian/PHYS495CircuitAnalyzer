@@ -118,17 +118,18 @@ public class StartupWindow extends JFrame{
 		changeComponentButton = new JButton("Change a component");
 		viewCircuitButton = new JButton("View entire circuit");
 		editBranchButton = new JButton("View/Edit parallel section");
-		calculateButton = new JButton("Plot admittance and phase angle");
+		calculateButton = new JButton("Plot voltage and phase angle");
+
 		
 		frequencyLabel = new JLabel("Max frequency on plot(also used for calculation): "+ frequencySlider.getValue() + "Hz",JLabel.CENTER);
 		minFrequencyLabel = new JLabel("Min frequency on plot: "+ minFrequencySlider.getValue() + "Hz",JLabel.CENTER);
 		
 		
-		realImpedanceLabel = new JTextArea("Real impedance:");
+		realImpedanceLabel = new JTextArea("Impedance:");
 		realImpedanceLabel.setLineWrap(true);
 		realImpedanceLabel.setEditable(false);
 		sp1 = new JScrollPane(realImpedanceLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		imaginaryImpedanceLabel = new JTextArea("Imaginary impedance:");
+		imaginaryImpedanceLabel = new JTextArea("Voltage percentage:");
 		imaginaryImpedanceLabel.setLineWrap(true);
 		imaginaryImpedanceLabel.setEditable(false);
 		sp2 = new JScrollPane(imaginaryImpedanceLabel,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -170,14 +171,15 @@ public class StartupWindow extends JFrame{
         		calculateButton.setEnabled(frequencyIsCorrect());
 	        	frequencyLabel.setText("Max frequency on plot(also used for calculation): "+ frequencySlider.getValue() + "Hz");
 	        	if(frequencyIsCorrect()) {
-	        		calculateButton.setText("Plot admittance and phase angle");
+	        		calculateButton.setText("Plot voltage and phase angle");
 	        		if(canCalculate) {
 		        		canCalculate = false;
 		        		JSlider js = (JSlider)ce.getSource();
 		        		double frequency = (double)js.getValue();
-		        		ComplexNumber imp =circuit.calculateTotalImpedance(frequency);	
-		        		realImpedanceLabel.setText("Real impedance: " + formatter.format(imp.getRealPart()));
-		        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + formatter.format(imp.getImaginaryPart()));
+		        		ComplexNumber imp =circuit.calculateTotalImpedance(frequency);
+		        		double temp = Math.sqrt(imp.getRealPart() * imp.getRealPart() + imp.getImaginaryPart() * imp.getImaginaryPart());
+		        		realImpedanceLabel.setText("Impedance: " + formatter.format(temp));
+		        		imaginaryImpedanceLabel.setText("Voltage percentage: " + formatter.format(circuit.calculateVoltagePercentage(frequency)));
 		        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
 		        		angleLabel.setText("Phase angle(degree): " + formatter.format((float)ang * 57.2958));
 		        		leadLabel.setText(circuit.findLeadingVector(frequency));
@@ -197,7 +199,7 @@ public class StartupWindow extends JFrame{
         		calculateButton.setEnabled(frequencyIsCorrect());
 	        	minFrequencyLabel.setText("Min frequency on plot: "+ minFrequencySlider.getValue() + "Hz");
 	        	if(frequencyIsCorrect()) {
-	        		calculateButton.setText("Plot admittance and phase angle");
+	        		calculateButton.setText("Plot voltage and phase angle");
 	        	}
 	        	else {
 	        		calculateButton.setText("Please adjust min/max frequency");
@@ -207,6 +209,7 @@ public class StartupWindow extends JFrame{
 		
 		this.circuit = new Circuit();
 		circuit.setWindow(this);
+		calculateButton.setEnabled(circuit.hasOutput());
 	}
 	
 	public void reenableButtons() {
@@ -230,6 +233,10 @@ public class StartupWindow extends JFrame{
 		viewCircuitButton.setEnabled(false);
 		editBranchButton.setEnabled(false);
 		calculateButton.setEnabled(false);
+	}
+	
+	public void setCalculateButton() {
+		calculateButton.setEnabled(circuit.hasOutput());
 	}
 	
 	private void createGUI() {
@@ -274,8 +281,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				realImpedanceLabel.setText("Real impedance: ");
-				imaginaryImpedanceLabel.setText("Imaginary impedance");
+				realImpedanceLabel.setText("Impedance: ");
+				imaginaryImpedanceLabel.setText("Voltage percentage");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new AddSingleComponentWindow(circuit);
@@ -289,8 +296,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				realImpedanceLabel.setText("Real impedance: ");
-				imaginaryImpedanceLabel.setText("Imaginary impedance");
+				realImpedanceLabel.setText("Impedance: ");
+				imaginaryImpedanceLabel.setText("Voltage percentage");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new DeleteSingleComponentWindow(circuit);
@@ -304,8 +311,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				realImpedanceLabel.setText("Real impedance: ");
-				imaginaryImpedanceLabel.setText("Imaginary impedance:");
+				realImpedanceLabel.setText("Impedance: ");
+				imaginaryImpedanceLabel.setText("Voltage percentage:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new AddParallelSectionWindow(circuit);
@@ -318,8 +325,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				realImpedanceLabel.setText("Real impedance: ");
-				imaginaryImpedanceLabel.setText("Imaginary impedance:");
+				realImpedanceLabel.setText("Impedance: ");
+				imaginaryImpedanceLabel.setText("Voltage percentage:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new DeleteParallelSectionWindow(circuit);
@@ -333,8 +340,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				realImpedanceLabel.setText("Real impedance: ");
-				imaginaryImpedanceLabel.setText("Imaginary impedance:");
+				realImpedanceLabel.setText("Impedance: ");
+				imaginaryImpedanceLabel.setText("Voltage percentage:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new ViewCircuitWindow(circuit);
@@ -351,8 +358,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				realImpedanceLabel.setText("Real impedance: ");
-				imaginaryImpedanceLabel.setText("Imaginary impedance:");
+				realImpedanceLabel.setText("Impedance: ");
+				imaginaryImpedanceLabel.setText("Voltage percentage:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new EditBranchWindow(circuit);
@@ -366,8 +373,8 @@ public class StartupWindow extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 				canCalculate = false;
 				disableButtons();
-				realImpedanceLabel.setText("Real impedance: ");
-				imaginaryImpedanceLabel.setText("Imaginary impedance:");
+				realImpedanceLabel.setText("Impedance: ");
+				imaginaryImpedanceLabel.setText("Voltage percentage:");
 				angleLabel.setText("Phase angle(degree): ");
 				leadLabel.setText("Lead: ");
 				new ChangeComponentWindow(circuit);
@@ -380,16 +387,17 @@ public class StartupWindow extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(!circuit.hasOutput()) {
-					realImpedanceLabel.setText("Real impedance:(no input) ");
-					imaginaryImpedanceLabel.setText("Imaginary impedance:(no input)");
+					realImpedanceLabel.setText("Impedance:(no output) ");
+					imaginaryImpedanceLabel.setText("Voltage percentage:(no output)");
 					angleLabel.setText("Phase angle:(no output)");
 					leadLabel.setText("Lead:(no output)");
 				}
 				else {
 					canCalculate = true;
 					ComplexNumber imp =circuit.calculateTotalImpedance(frequencySlider.getValue());
-					realImpedanceLabel.setText("Real impedance: " + formatter.format(imp.getRealPart()));
-	        		imaginaryImpedanceLabel.setText("Imaginary impedance: " + formatter.format(imp.getImaginaryPart()));
+					double temp = Math.sqrt(imp.getRealPart() * imp.getRealPart() + imp.getImaginaryPart() * imp.getImaginaryPart());
+					realImpedanceLabel.setText("Impedance: " + formatter.format(temp));
+	        		imaginaryImpedanceLabel.setText("Voltage percentage: " + formatter.format(circuit.calculateVoltagePercentage(frequencySlider.getValue())));
 	        		double ang = circuit.calculatePhaseAngle(frequencySlider.getValue());
 	        		angleLabel.setText("Phase angle(degree): " + formatter.format((float)ang * 57.2958));
 	        		leadLabel.setText(circuit.findLeadingVector(frequencySlider.getValue()));
