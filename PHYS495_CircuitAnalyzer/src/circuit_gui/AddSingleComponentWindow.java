@@ -244,6 +244,7 @@ public class AddSingleComponentWindow extends JFrame{
 	
 	private void cleanUp() {
 		circuit.windowEnableButtons();
+		circuit.getWindow().setCalculateButton();
 		this.dispose();
 	}
 	

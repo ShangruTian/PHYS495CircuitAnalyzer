@@ -244,6 +244,7 @@ private static final long serialVersionUID = 1;
 	
 	private void cleanUp() {
 		circuit.windowEnableButtons();
+		circuit.getWindow().setCalculateButton();
 		this.dispose();
 	}
 	
