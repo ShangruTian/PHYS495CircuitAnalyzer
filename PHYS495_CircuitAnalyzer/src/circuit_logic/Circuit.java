@@ -249,8 +249,10 @@ public class Circuit {
 		CircuitNode toDelete = CircuitMap.get(name);
 		if(toDelete == outputStartingNode) {
 			outputStartingNode = null;
+			outputEndingNode = null;
 		}
 		else if(toDelete == outputEndingNode) {
+			outputStartingNode = null;
 			outputEndingNode = null;
 		}
 		CircuitNode toDeletePrev = toDelete.prev();
@@ -444,10 +446,7 @@ public class Circuit {
 	}
 	
 	public double calculateVoltagePercentage(double frequency) {
-		if(pureCapacitive() && frequency == 0) {
-			return 0;
-		}
-		else {
+	
 			ComplexNumber sectionImpedance = calculateTotalImpedance(frequency);
 			CircuitNode curr = start0;
 			ComplexNumber temp = new ComplexNumber (0,0);
@@ -470,7 +469,7 @@ public class Circuit {
 			double den = Math.sqrt(c*c + d*d);
 			
 			return num/den;
-		}
+
 	}
 	
 	public double calculatePhaseAngle(double frequency){

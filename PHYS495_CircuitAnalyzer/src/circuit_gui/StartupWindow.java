@@ -116,7 +116,7 @@ public class StartupWindow extends JFrame{
 		addParallelComponents = new JButton("Add a parallel section");
 		deleteParallelComponents = new JButton("Delete a parallel section");
 		changeComponentButton = new JButton("Change a component");
-		viewCircuitButton = new JButton("View entire circuit");
+		viewCircuitButton = new JButton("View circuit/Select output terminals");
 		editBranchButton = new JButton("View/Edit parallel section");
 		calculateButton = new JButton("Plot voltage and phase angle");
 
@@ -346,7 +346,7 @@ public class StartupWindow extends JFrame{
 				leadLabel.setText("Lead: ");
 				new ViewCircuitWindow(circuit);
 				if(circuit.canDraw() != -1) {
-					new DrawCircuitWindow(circuit);
+					//new DrawCircuitWindow(circuit);
 				}
 			}
 
